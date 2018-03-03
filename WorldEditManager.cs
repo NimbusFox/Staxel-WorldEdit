@@ -278,7 +278,7 @@ namespace NimbusFox.WorldEdit {
                 }
             };
 
-            var fileData = new FileData();
+            var fileData = new FileData {Size = cube1};
 
             fileData.Mappings.Add("00000000", new VectorData {
                 Code = Constants.SkyCode,
