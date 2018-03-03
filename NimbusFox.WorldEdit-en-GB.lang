@@ -1,0 +1,24 @@
+﻿language.code=en-GB
+language=English
+
+mods.nimbusfox.exception.message=<NimbusFox>:^c:FF0000;An error occured in {0-mod} and an error log has been stored in the save folder under Mods\\Nimbusfox\\{1-mod}\\Errors. Currently there are no ways of sending the errors to me. If you see me in Discord don't hesitate to send me the file there. No personal information is gathered. Only what is public and what is stored in memory that {2-mod} has access to is present in the error files
+
+mods.nimbusfox.worldedit.command.copy.description=^c:F2E200;//copy ^c:FFFFFF;Copy the tiles in the selected area into your clipboard
+mods.nimbusfox.worldedit.command.paste.description=^c:F2E200;//paste ^c:FFFFFF;Paste the tiles in your clipboard
+mods.nimbusfox.worldedit.command.pos1.description=^c:F2E200;//pos1 ^c:FFFFFF;Sets the first position of the selection area
+mods.nimbusfox.worldedit.command.pos2.description=^c:F2E200;//pos2 ^c:FFFFFF;Sets the second position of the selection area
+mods.nimbusfox.worldedit.command.clear.description=^c:F2E200;//clear ^c:FFFFFF;Clears the selection area
+mods.nimbusfox.worldedit.command.replace.description=^c:F2E200;//replace ^c:FFFFFF;Replaces tiles in the selection area with the desired tile code
+mods.nimbusfox.worldedit.command.set.description=^c:F2E200;//set ^c:FFFFFF;Set all tiles in the selection area to the desired tile code
+
+mods.nimbusfox.worldedit.success.copy=^c:34EA80;Copied {0-tilecount} tiles
+mods.nimbusfox.worldedit.success.paste=^c:34EA80;{0-tilecount} tiles pasted
+mods.nimbusfox.worldedit.success.pos1=^c:34EA80;Position 1 set (X:{0-X}, Y:{1-Y}, Z:{2-Z})
+mods.nimbusfox.worldedit.success.pos2=^c:34EA80;Position 2 set (X:{0-X}, Y:{1-Y}, Z:{2-Z})
+mods.nimbusfox.worldedit.success.clearselection=^c:34EA80;Selection cleared
+mods.nimbusfox.worldedit.success.replaced=^c:34EA80;{0-count} tiles replaced successfully
+mods.nimbusfox.worldedit.success.set=^c:34EA80;{0-count} tiles set successfully
+
+mods.nimbusfox.worldedit.error.noregion=^c:FF0000;No region is selected
+mods.nimbusfox.worldedit.error.emptyclipboard=^c:FF0000;Your clipboard is empty
+mods.nimbusfox.worldedit.error.invalidtile=^c:FF0000;'{0-tile}' is not a valid tile
