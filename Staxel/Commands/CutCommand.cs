@@ -8,24 +8,24 @@ using Staxel.Commands;
 using Staxel.Server;
 
 namespace NimbusFox.WorldEdit.Staxel.Commands {
-    public class SaveCommand : ICommandBuilder {
+    public class CutCommand : ICommandBuilder {
         public string Execute(string[] bits, Blob blob, ClientServerConnection connection, ICommandsApi api,
             out object[] responseParams) {
             responseParams = new object[] { };
 
             var player = WorldEditManager.FoxCore.UserManager.GetPlayerEntityByUid(connection.Credentials.Uid);
 
-            if (bits.Any()) {
-                if (bits.Skip(1).Any()) {
-                    WorldEditManager.Export(player, bits[1]);
-                }
-            }
+            WorldEditManager.Copy(player);
 
-            return "mods.nimbusfox.worldedit.success.save";
+            long tileCount;
+
+            WorldEditManager.Set(player, "staxel.tile.Sky", out tileCount, out _);
+
+            return "mods.nimbusfox.worldedit.success.copy";
         }
 
-        public string Kind => "/save";
-        public string Usage => "";
+        public string Kind => "/cut";
+        public string Usage => "mods.nimbusfox.worldedit.command.cut.description";
         public bool Public => false;
     }
 }

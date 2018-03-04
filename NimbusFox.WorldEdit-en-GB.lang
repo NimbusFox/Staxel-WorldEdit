@@ -10,6 +10,9 @@ mods.nimbusfox.worldedit.command.pos2.description=^c:F2E200;//pos2 ^c:FFFFFF;Set
 mods.nimbusfox.worldedit.command.clear.description=^c:F2E200;//clear ^c:FFFFFF;Clears the selection area
 mods.nimbusfox.worldedit.command.replace.description=^c:F2E200;//replace ^c:FFFFFF;Replaces tiles in the selection area with the desired tile code
 mods.nimbusfox.worldedit.command.set.description=^c:F2E200;//set ^c:FFFFFF;Set all tiles in the selection area to the desired tile code
+mods.nimbusfox.worldedit.command.cut.description=^c:F2E200;//cut ^c:FFFFFF;Cuts all tiles in the selection area and places it into your clipboard
+mods.nimbusfox.worldedit.command.platform.description=^c:F2E200;//plaform ^c:FFFFFF;Places a platform beneath you depending on the size and tile you have selected
+mods.nimbusfox.worldedit.command.heading.description=^c:F2E200;//heading ^c:FFFFFF;Outputs your current heading
 
 mods.nimbusfox.worldedit.success.copy=^c:34EA80;Copied {0-tilecount} tiles
 mods.nimbusfox.worldedit.success.paste=^c:34EA80;{0-tilecount} tiles pasted
@@ -18,6 +21,9 @@ mods.nimbusfox.worldedit.success.pos2=^c:34EA80;Position 2 set (X:{0-X}, Y:{1-Y}
 mods.nimbusfox.worldedit.success.clearselection=^c:34EA80;Selection cleared
 mods.nimbusfox.worldedit.success.replaced=^c:34EA80;{0-count} tiles replaced successfully
 mods.nimbusfox.worldedit.success.set=^c:34EA80;{0-count} tiles set successfully
+mods.nimbusfox.worldedit.success.load=^c:34EA80;File loaded successfully into your clipboard
+mods.nimbusfox.worldedit.success.save=^c:34EA80;File saves successfully from your clipboard
+mods.nimbusfox.worldedit.success.heading=^c:34EA80;x: {0-headingX} y: {1-headingY} Direction: {2-Guess}
 
 mods.nimbusfox.worldedit.error.noregion=^c:FF0000;No region is selected
 mods.nimbusfox.worldedit.error.emptyclipboard=^c:FF0000;Your clipboard is empty

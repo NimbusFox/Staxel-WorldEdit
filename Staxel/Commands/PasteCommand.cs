@@ -21,7 +21,7 @@ namespace NimbusFox.WorldEdit.Staxel.Commands {
                 return "mods.nimbusfox.worldedit.error.emptyclipboard";
             }
 
-            responseParams = new object[] { tilecount };
+            responseParams = new object[] { tilecount.ToString() };
             return "mods.nimbusfox.worldedit.success.paste";
         }
 

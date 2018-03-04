@@ -21,7 +21,7 @@ namespace NimbusFox.WorldEdit.Staxel.Commands {
                 }
             }
 
-            return null;
+            return "mods.nimbusfox.worldedit.success.load";
         }
 
         public string Kind => "/load";

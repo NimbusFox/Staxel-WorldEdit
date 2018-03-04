@@ -1,40 +1,42 @@
 ﻿{
-  "code": "mods.nimbusfox.worldedit.particles.region",
-  "position": {
-    "x": 0.0,
-    "y": 0.553,
-    "z": 0.0
-  },
-  "positionSpread": {
-    "x": 0.328,
-    "y": 0.62,
-    "z": 0.328
-  },
-  "gravityFactor": {
-    "x": 0.0,
-    "y": 0.0,
-    "z": 0.0
-  },
-  "emitVelocity": {
-    "x": 0.0,
-    "y": 0.0,
-    "z": 0.0
-  },
-  "emitVelocitySpread": {
-    "x": 1.73,
-    "y": 1.98,
-    "z": 1.734
-  },
-  "colorSpread": {
-    "x": 0.0,
-    "y": 0.0,
-    "z": 0.0 
-  },
-  "color": "1CFFF7",
-  "particlesPerSecond": 30.0,
-  "liveDuration": 0.7,
-  "angularVelocity": 1.0,
-  "scale": 0.4,
-  "scaleSpread": 0.679,
-  "emitDuration": 1.0
+	"code": "mods.nimbusfox.worldedit.particles.region",
+	"position": {
+		"x": 0.0,
+		"y": 0.5,
+		"z": 0.0
+	},
+	"positionSpread": {
+		"x": 0.0,
+		"y": 0.0,
+		"z": 0.0
+	},
+	"gravityFactor": {
+		"x": 0.0,
+		"y": 0.0,
+		"z": 0.0
+	},
+	"emitVelocity": {
+		"x": 0.0,
+		"y": 0.0,
+		"z": 0.0
+	},
+	"emitVelocitySpread": {
+		"x": 0.5,
+		"y": 0.5,
+		"z": 0.5
+	},
+	"colorSpread": {
+		"x": 0.25,
+		"y": 0.15,
+		"z": 0.05 
+	},
+	"color": "C84040",
+	"particlesPerSecond": 30.0,
+	"liveDuration": 1.0,
+	"angularVelocity": 0.0,
+	"scale": 0.8,
+	"scaleSpread": 0.2,
+	"emitDuration": 1.0,
+	"velocityStretch" : 0.0,
+	"emissive" : 0.0
 }

@@ -21,7 +21,7 @@ namespace NimbusFox.WorldEdit.Staxel.Commands {
                 return "mods.nimbusfox.worldedit.error.noregion";
             }
 
-            responseParams = new object[] { tileCount };
+            responseParams = new object[] { tileCount.ToString() };
             return "mods.nimbusfox.worldedit.success.copy";
         }
 
