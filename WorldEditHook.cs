@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NimbusFox.FoxCore;
+using NimbusFox.FoxCore.Classes;
 using NimbusFox.WorldEdit.Classes;
 using Plukit.Base;
 using Staxel.Items;
@@ -14,16 +16,17 @@ namespace NimbusFox.WorldEdit {
     public class WorldEditHook : IModHookV2 {
         internal static Dictionary<Guid, List<RenderItem>> ToRender;
         internal static long NextTick;
+        internal static Dictionary<Guid, VectorCubeI> ForbidEditing;
         public void Dispose() { }
 
         public void GameContextInitializeInit() {
             ToRender = new Dictionary<Guid, List<RenderItem>>();
+            ForbidEditing = new Dictionary<Guid, VectorCubeI>();
             NextTick = 0;
-        }
-        public void GameContextInitializeBefore() { }
-        public void GameContextInitializeAfter() {
             WorldEditManager.Init();
         }
+        public void GameContextInitializeBefore() { }
+        public void GameContextInitializeAfter() { }
         public void GameContextDeinitialize() { }
         public void GameContextReloadBefore() { }
         public void GameContextReloadAfter() { }
@@ -33,32 +36,47 @@ namespace NimbusFox.WorldEdit {
             WorldEditManager.FoxCore.EntityParticleManager.DrawParticles();
             WorldEditManager.FoxCore.EntityFollowParticleManager.DrawParticles();
 
-            if (NextTick <= DateTime.Now.Ticks) {
-                foreach (var toRender in new Dictionary<Guid, List<RenderItem>>(ToRender)) {
-                    foreach (var render in new List<RenderItem>(toRender.Value).Take(250)) {
-                        if (universe.World.PlaceTile(render.Location, render.Tile, TileAccessFlags.SynchronousWait)) {
-                            toRender.Value.Remove(render);
-                            if (!toRender.Value.Any()) {
-                                ToRender.Remove(toRender.Key);
-                                WorldEditManager.FoxCore.ParticleManager.Remove(toRender.Key);
-                            }
+            foreach (var toRender in new Dictionary<Guid, List<RenderItem>>(ToRender)) {
+                foreach (var render in new List<RenderItem>(toRender.Value).Take(250)) {
+                    if (universe.World.PlaceTile(render.Location, render.Tile, TileAccessFlags.SynchronousWait)) {
+                        toRender.Value.Remove(render);
+                        if (!toRender.Value.Any()) {
+                            ToRender.Remove(toRender.Key);
+                            ForbidEditing.Remove(toRender.Key);
+                            WorldEditManager.FoxCore.ParticleManager.Remove(toRender.Key);
                         }
                     }
                 }
-                NextTick = DateTime.Now.Ticks;
             }
         }
+
+        public static bool CheckIfCanEdit(Vector3I location) {
+            return !new Dictionary<Guid, VectorCubeI>(ForbidEditing).Any(x => x.Value.IsInside(location));
+        }
+
+        public static bool CheckIfCanEdit(Vector3I start, Vector3I end) {
+            var canEdit = true;
+
+            if (!ForbidEditing.Any()) {
+                return true;
+            }
+
+            Fox_Core.VectorLoop(start, end, (x, y, z) => { canEdit &= !CheckIfCanEdit(new Vector3I(x, y, z)); });
+
+            return canEdit;
+        }
+
         public void UniverseUpdateAfter() { }
         public bool CanPlaceTile(Entity entity, Vector3I location, Tile tile, TileAccessFlags accessFlags) {
-            return true;
+            return CheckIfCanEdit(location);
         }
 
         public bool CanReplaceTile(Entity entity, Vector3I location, Tile tile, TileAccessFlags accessFlags) {
-            return true;
+            return CheckIfCanEdit(location);
         }
 
         public bool CanRemoveTile(Entity entity, Vector3I location, TileAccessFlags accessFlags) {
-            return true;
+            return CheckIfCanEdit(location);
         }
 
         public void ClientContextInitializeInit() { }

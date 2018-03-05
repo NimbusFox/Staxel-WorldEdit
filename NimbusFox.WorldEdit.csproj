@@ -76,9 +76,13 @@
   <ItemGroup>
     <Compile Include="Classes\CodeEntry.cs" />
     <Compile Include="Classes\FileData.cs" />
+    <Compile Include="Classes\RedoUndo.cs" />
     <Compile Include="Classes\RenderItem.cs" />
+    <Compile Include="Classes\TileData.cs" />
+    <Compile Include="Classes\UndoData.cs" />
     <Compile Include="Classes\UserData.cs" />
     <Compile Include="Classes\VectorData.cs" />
+    <Compile Include="Enums\UndoRedoResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\ReplaceResult.cs" />
     <Compile Include="Staxel\Commands\ClearCommand.cs" />
@@ -95,9 +99,12 @@
     <None Include="Staxel\Items\BuilderWand\BuilderWandComponent.cs" />
     <None Include="Staxel\Items\BuilderWand\BuilderWandComponentBuilder.cs" />
     <None Include="Staxel\Items\BuilderWand\BuilderWandRenderer.cs" />
+    <Compile Include="Staxel\Commands\RedoCommand.cs" />
     <Compile Include="Staxel\Commands\ReplaceCommand.cs" />
     <Compile Include="Staxel\Commands\SaveCommand.cs" />
     <Compile Include="Staxel\Commands\SetCommand.cs" />
+    <Compile Include="Staxel\Commands\UndoCommand.cs" />
+    <Compile Include="Staxel\Commands\WallCommand.cs" />
     <Compile Include="WorldEditHook.cs" />
     <Compile Include="WorldEditManager.cs" />
   </ItemGroup>
