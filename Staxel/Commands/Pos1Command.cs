@@ -13,15 +13,29 @@ namespace NimbusFox.WorldEdit.Staxel.Commands {
             out object[] responseParams) {
             responseParams = new object[] { };
 
-            var player = WorldEditManager.FoxCore.UserManager.GetPlayerEntityByUid(connection.Credentials.Uid);
+            try {
 
-            WorldEditManager.AddPos1(player);
+                var player = WorldEditManager.FoxCore.UserManager.GetPlayerEntityByUid(connection.Credentials.Uid);
 
-            responseParams = new object[] {
+                WorldEditManager.AddPos1(player);
+
+                responseParams = new object[] {
                 player.Physics.BottomPosition().X,
                 player.Physics.BottomPosition().Y,
                 player.Physics.BottomPosition().Z
             };
+            } catch (Exception ex) {
+                WorldEditManager.FoxCore.ExceptionManager.HandleException(ex,
+                    new Dictionary<string, object>
+                    {{"input", bits
+                    }
+                    });
+                responseParams = new object[3];
+                responseParams[0] = "WorldEdit";
+                responseParams[1] = "WorldEdit";
+                responseParams[2] = "WorldEdit";
+                return "mods.nimbusfox.exception.message";
+            }
             return "mods.nimbusfox.worldedit.success.pos1";
         }
 

@@ -13,15 +13,29 @@ namespace NimbusFox.WorldEdit.Staxel.Commands {
             out object[] responseParams) {
             responseParams = new object[] { };
 
-            var player = WorldEditManager.FoxCore.UserManager.GetPlayerEntityByUid(connection.Credentials.Uid);
+            try {
 
-            var tileCount = WorldEditManager.Copy(player);
+                var player = WorldEditManager.FoxCore.UserManager.GetPlayerEntityByUid(connection.Credentials.Uid);
 
-            if (tileCount == 0) {
-                return "mods.nimbusfox.worldedit.error.noregion";
+                var tileCount = WorldEditManager.Copy(player);
+
+                if (tileCount == 0) {
+                    return "mods.nimbusfox.worldedit.error.noregion";
+                }
+
+                responseParams = new object[] { tileCount.ToString() };
+            } catch (Exception ex) {
+                WorldEditManager.FoxCore.ExceptionManager.HandleException(ex,
+                    new Dictionary<string, object>
+                    {{"input", bits
+                    }
+                    });
+                responseParams = new object[3];
+                responseParams[0] = "WorldEdit";
+                responseParams[1] = "WorldEdit";
+                responseParams[2] = "WorldEdit";
+                return "mods.nimbusfox.exception.message";
             }
-
-            responseParams = new object[] { tileCount.ToString() };
             return "mods.nimbusfox.worldedit.success.copy";
         }
 

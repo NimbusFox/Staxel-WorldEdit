@@ -13,9 +13,20 @@ namespace NimbusFox.WorldEdit.Staxel.Commands {
             out object[] responseParams) {
             responseParams = new object[] { };
 
-            var player = WorldEditManager.FoxCore.UserManager.GetPlayerEntityByUid(connection.Credentials.Uid);
+            try {
+                var player = WorldEditManager.FoxCore.UserManager.GetPlayerEntityByUid(connection.Credentials.Uid);
 
-            WorldEditManager.Clear(player);
+                WorldEditManager.Clear(player);
+            } catch(Exception ex) {
+                WorldEditManager.FoxCore.ExceptionManager.HandleException(ex,
+                    new Dictionary<string, object>
+                        {{"input", bits}});
+                responseParams = new object[3];
+                responseParams[0] = "WorldEdit";
+                responseParams[1] = "WorldEdit";
+                responseParams[2] = "WorldEdit";
+                return "mods.nimbusfox.exception.message";
+            }
 
             return "mods.nimbusfox.worldedit.success.clearselection";
         }

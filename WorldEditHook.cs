@@ -17,7 +17,12 @@ namespace NimbusFox.WorldEdit {
         internal static Dictionary<Guid, List<RenderItem>> ToRender;
         internal static long NextTick;
         internal static Dictionary<Guid, VectorCubeI> ForbidEditing;
-        public void Dispose() { }
+
+        public void Dispose() {
+            WorldEditManager.FoxCore.ParticleManager.Dispose();
+            WorldEditManager.FoxCore.EntityParticleManager.Dispose();
+            WorldEditManager.FoxCore.EntityFollowParticleManager.Dispose();
+        }
 
         public void GameContextInitializeInit() {
             ToRender = new Dictionary<Guid, List<RenderItem>>();
