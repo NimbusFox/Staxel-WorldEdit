@@ -97,6 +97,7 @@
     <Compile Include="Staxel\Commands\HeadingCommand.cs" />
     <Compile Include="Staxel\Commands\LoadCommand.cs" />
     <Compile Include="Staxel\Commands\PasteCommand.cs" />
+    <Compile Include="Staxel\Commands\PastePreviewCommand.cs" />
     <Compile Include="Staxel\Commands\PlatformCommand.cs" />
     <Compile Include="Staxel\Commands\Pos1Command.cs" />
     <Compile Include="Staxel\Commands\Pos2Command.cs" />

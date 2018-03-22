@@ -20,10 +20,10 @@ namespace NimbusFox.WorldEdit.Staxel.Commands {
                 WorldEditManager.AddPos1(player);
 
                 responseParams = new object[] {
-                player.Physics.BottomPosition().X,
-                player.Physics.BottomPosition().Y,
-                player.Physics.BottomPosition().Z
-            };
+                    player.Physics.BottomPosition().X,
+                    player.Physics.BottomPosition().Y,
+                    player.Physics.BottomPosition().Z
+                };
             } catch (Exception ex) {
                 WorldEditManager.FoxCore.ExceptionManager.HandleException(ex,
                     new Dictionary<string, object>

@@ -18,6 +18,8 @@ using NimbusFox.FoxCore.Classes;
 using NimbusFox.WorldEdit.Classes;
 using NimbusFox.WorldEdit.Enums;
 using Staxel;
+using Staxel.Client;
+using Staxel.Draw;
 using Staxel.FoxCore;
 using Staxel.LivingWorld;
 using Staxel.Steam;
@@ -38,7 +40,7 @@ namespace NimbusFox.WorldEdit {
         }
 
         internal static void Init() {
-            FoxCore = new Fox_Core("NimbusFox", "WorldEdit", "V0.1");
+            FoxCore = new Fox_Core("NimbusFox", "WorldEdit", "V0.2");
             _positions = new Dictionary<Entity, UserData>();
             _undoData = new Dictionary<string, RedoUndo>();
         }
@@ -105,8 +107,16 @@ namespace NimbusFox.WorldEdit {
             EntityCheck(entity);
             var target = PositionClone()[entity];
 
-            if (target.Pos1 == default(Vector3D) || target.Pos2 == default(Vector3D)) {
+            if (target.Pos1 == default(Vector3D) && target.Pos2 == default(Vector3D)) {
                 return 0;
+            }
+
+            if (target.Pos1 == default(Vector3D)) {
+                target.Pos1 = target.Pos2;
+            }
+
+            if (target.Pos2 == default(Vector3D)) {
+                target.Pos2 = target.Pos1;
             }
 
             var region = new VectorCubeI(target.Pos1.From3Dto3I(), target.Pos2.From3Dto3I());
@@ -121,8 +131,8 @@ namespace NimbusFox.WorldEdit {
                 }
             });
 
-            target.ClipBoardOffset = new Vector3D(region.X.Start - entity.Physics.Position.X,
-                region.Y.Start - entity.Physics.Position.Y, region.Z.Start - entity.Physics.Position.Z);
+            target.ClipBoardOffset = new Vector3D(region.X.Start - entity.Physics.BottomPosition().X,
+                region.Y.Start - entity.Physics.BottomPosition().Y, region.Z.Start - entity.Physics.BottomPosition().Z);
 
             return region.GetTileCount();
         }
@@ -817,6 +827,39 @@ namespace NimbusFox.WorldEdit {
             Flush();
 
             return UndoRedoResult.Success;
+        }
+
+        internal static bool DisplayPasteRegion(Entity entity) {
+            EntityCheck(entity);
+
+            var target = PositionClone()[entity];
+
+            if (!target.ClipBoard.Any()) {
+                return false;
+            }
+
+            var entityVector = entity.Physics.BottomPosition().From3Dto3I();
+            var clipboardVector = target.ClipBoardOffset.From3Dto3I();
+
+            var first = target.ClipBoard.First();
+            var last = target.ClipBoard.Last();
+
+            var min = new Vector3I(first.Key.X + clipboardVector.X + entityVector.X,
+                first.Key.Y + clipboardVector.Y + entityVector.Y,
+                first.Key.Z + clipboardVector.Z + entityVector.Z);
+            var max = new Vector3I(last.Key.X + clipboardVector.X + entityVector.X,
+                last.Key.Y + clipboardVector.Y + entityVector.Y,
+                last.Key.Z + clipboardVector.Z + entityVector.Z);
+
+            var current = FoxCore.ParticleManager.Add(min, max, "mods.nimbusfox.worldedit.particles.region");
+
+            if (target.RegionGuid != Guid.Empty) {
+                FoxCore.ParticleManager.Remove(target.RegionGuid);
+            }
+
+            target.RegionGuid = current;
+
+            return true;
         }
     }
 }
