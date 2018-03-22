@@ -19,6 +19,7 @@ using NimbusFox.WorldEdit.Classes;
 using NimbusFox.WorldEdit.Enums;
 using Staxel;
 using Staxel.FoxCore;
+using Staxel.FoxCore.Enums;
 using Staxel.LivingWorld;
 using Staxel.Steam;
 using Color = Microsoft.Xna.Framework.Color;
@@ -117,23 +118,28 @@ namespace NimbusFox.WorldEdit {
                 Tile tile;
                 if (FoxCore.WorldManager.Universe.World.ReadTile(new Vector3I(x, y, z), TileAccessFlags.SynchronousWait,
                     out tile)) {
-                    target.ClipBoard.Add(new Vector3I(x - region.X.Start, y - region.Y.Start, z - region.Z.Start), tile);
+                    target.ClipBoard.Add(new Vector3I(x - region.Start.X, y - region.Start.Y, z - region.Start.Z), tile);
                 }
             });
 
-            target.ClipBoardOffset = new Vector3D(region.X.Start - entity.Physics.Position.X,
-                region.Y.Start - entity.Physics.Position.Y, region.Z.Start - entity.Physics.Position.Z);
+            target.ClipBoardOffset = new Vector3D(region.Start.X - entity.Physics.Position.X,
+                region.Start.Y - entity.Physics.Position.Y, region.Start.Z - entity.Physics.Position.Z);
 
             return region.GetTileCount();
         }
 
-        internal static long Paste(Entity entity) {
+        internal static long Paste(Entity entity, bool vectorOverride = false, Vector3I vectorO = default(Vector3I)) {
             EntityCheck(entity);
 
             var target = PositionClone()[entity];
 
             if (target.ClipBoard.Any()) {
                 var entityVector = entity.Physics.BottomPosition().From3Dto3I();
+
+                if (vectorOverride) {
+                    entityVector = vectorO;
+                }
+
                 var clipboardVector = target.ClipBoardOffset.From3Dto3I();
 
                 var first = target.ClipBoard.First();
@@ -419,9 +425,9 @@ namespace NimbusFox.WorldEdit {
             var target = PositionClone()[entity];
 
             var cube = new VectorCubeI(target.Pos1.From3Dto3I(), target.Pos2.From3Dto3I());
-            var cube0 = Vector3I.Min(new Vector3I(cube.X.Start, cube.Y.Start, cube.Z.Start), new Vector3I(cube.X.End, cube.Y.End, cube.Z.End));
-            var cube1 = Vector3I.Max(new Vector3I(cube.X.Start, cube.Y.Start, cube.Z.Start),
-                            new Vector3I(cube.X.End, cube.Y.End, cube.Z.End)) - cube0 + Vector3I.One;
+            var cube0 = Vector3I.Min(new Vector3I(cube.Start.X, cube.Start.Y, cube.Start.Z), new Vector3I(cube.End.X, cube.End.Y, cube.End.Z));
+            var cube1 = Vector3I.Max(new Vector3I(cube.Start.X, cube.Start.Y, cube.Start.Z),
+                            new Vector3I(cube.End.X, cube.End.Y, cube.End.Z)) - cube0 + Vector3I.One;
 
             var data = new Dictionary<int, Color>();
             var colorSet = new HashSet<Color>
@@ -732,11 +738,11 @@ namespace NimbusFox.WorldEdit {
 
             var id = undoRedo.ID[last.Key];
 
-            if (!WorldEditHook.CheckIfCanEdit(id.GetStart(), id.GetEnd())) {
+            if (!WorldEditHook.CheckIfCanEdit(id.Start, id.End)) {
                 return UndoRedoResult.NotFinished;
             }
 
-            var current = FoxCore.ParticleManager.Add(id.GetStart(), id.GetEnd(),
+            var current = FoxCore.ParticleManager.Add(id.Start, id.End,
                 "mods.nimbusfox.worldedit.particles.region");
 
             var list = new List<RenderItem>();
@@ -782,11 +788,11 @@ namespace NimbusFox.WorldEdit {
 
             var id = undoRedo.ID[last.Key];
 
-            if (!WorldEditHook.CheckIfCanEdit(id.GetStart(), id.GetEnd())) {
+            if (!WorldEditHook.CheckIfCanEdit(id.Start, id.End)) {
                 return UndoRedoResult.NotFinished;
             }
 
-            var current = FoxCore.ParticleManager.Add(id.GetStart(), id.GetEnd(),
+            var current = FoxCore.ParticleManager.Add(id.Start, id.End,
                 "mods.nimbusfox.worldedit.particles.region");
 
             var list = new List<RenderItem>();
@@ -817,6 +823,97 @@ namespace NimbusFox.WorldEdit {
             Flush();
 
             return UndoRedoResult.Success;
+        }
+
+        internal static void Stack(Entity entity, int repeat, string direction = "forwards") {
+            EntityCheck(entity);
+
+            var target = PositionClone()[entity];
+
+            if (target.Pos1 == default(Vector3D) || target.Pos2 == default(Vector3D)) {
+                return;
+            }
+
+            var facing = entity.Logic.Heading().GetDirection();
+
+            switch (direction.ToLower()) {
+                case "forwards":
+                    break;
+                case "left":
+                    if (facing == Compass.EAST) {
+                        facing = Compass.NORTH;
+                    } else if (facing == Compass.NORTH) {
+                        facing = Compass.WEST;
+                    } else if (facing == Compass.WEST) {
+                        facing = Compass.SOUTH;
+                    } else if (facing == Compass.SOUTH) {
+                        facing = Compass.EAST;
+                    }
+
+                    break;
+                case "right":
+                    if (facing == Compass.EAST) {
+                        facing = Compass.SOUTH;
+                    } else if (facing == Compass.SOUTH) {
+                        facing = Compass.WEST;
+                    } else if (facing == Compass.WEST) {
+                        facing = Compass.NORTH;
+                    } else if (facing == Compass.NORTH) {
+                        facing = Compass.EAST;
+                    }
+
+                    break;
+                case "backwards":
+                    if (facing == Compass.EAST) {
+                        facing = Compass.WEST;
+                    } else if (facing == Compass.WEST) {
+                        facing = Compass.EAST;
+                    } else if (facing == Compass.NORTH) {
+                        facing = Compass.SOUTH;
+                    } else if (facing == Compass.SOUTH) {
+                        facing = Compass.NORTH;
+                    }
+
+                    break;
+                case "up":
+                    facing = Compass.UP;
+                    break;
+                case "down":
+                    facing = Compass.DOWN;
+                    break;
+                default:
+                    return;
+            }
+
+            Copy(entity);
+
+            var cube = new VectorCubeI(target.ClipBoard.Keys.First(), target.ClipBoard.Keys.Last());
+
+            var oldOffset = target.ClipBoardOffset;
+
+            var x = cube.End.X - cube.Start.X;
+            var y = cube.End.Y - cube.Start.Y;
+            var z = cube.End.Z - cube.Start.Z;
+
+            for (var i = 1; i <= repeat; i++) {
+                if (facing == Compass.NORTH) {
+                    target.ClipBoardOffset = new Vector3D(0, 0, -z * i);
+                } else if (facing == Compass.EAST) {
+                    target.ClipBoardOffset = new Vector3D(x * i, 0, 0);
+                } else if (facing == Compass.SOUTH) {
+                    target.ClipBoardOffset = new Vector3D(0, 0, z * i);
+                } else if (facing == Compass.WEST) {
+                    target.ClipBoardOffset = new Vector3D(-x * i, 0, 0);
+                } else if (facing == Compass.UP) {
+                    target.ClipBoardOffset = new Vector3D(0, y * i, 0);
+                } else if (facing == Compass.DOWN) {
+                    target.ClipBoardOffset = new Vector3D(0, -y * i, 0);
+                }
+
+                Paste(entity, true, target.Pos1.From3Dto3I());
+            }
+
+            target.ClipBoardOffset = oldOffset;
         }
     }
 }
