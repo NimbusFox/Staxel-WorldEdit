@@ -11,5 +11,6 @@ namespace NimbusFox.WorldEdit.Classes {
         public Tile Tile { get; set; }
         public Vector3I Location { get; set; }
         public Guid ParticleGuid { get; set; }
+        public string UserUID { get; set; }
     }
 }

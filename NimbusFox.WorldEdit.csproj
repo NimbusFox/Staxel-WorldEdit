@@ -109,6 +109,7 @@
     <Compile Include="Staxel\Commands\ReplaceCommand.cs" />
     <Compile Include="Staxel\Commands\SaveCommand.cs" />
     <Compile Include="Staxel\Commands\SetCommand.cs" />
+    <Compile Include="Staxel\Commands\StackCommand.cs" />
     <Compile Include="Staxel\Commands\UndoCommand.cs" />
     <Compile Include="Staxel\Commands\WallCommand.cs" />
     <Compile Include="WorldEditHook.cs" />
