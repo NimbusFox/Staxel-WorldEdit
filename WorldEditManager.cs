@@ -44,16 +44,9 @@ namespace NimbusFox.WorldEdit {
             _undoData = new Dictionary<string, RedoUndo>();
         }
 
-        private static void Flush() {
+        internal static void Flush() {
             foreach (var item in UndoClone()) {
-
-                foreach (var key in item.Value.ID.Keys.ToList()) {
-                    if (!item.Value.Undo.ContainsKey(key) && !item.Value.Redo.ContainsKey(key)) {
-                        item.Value.ID.Remove(key);
-                    }
-                }
-
-                FoxCore.FileManager.WriteFile($"{item.Key}.dat", item.Value);
+                FoxCore.DirectoryManager.WriteFile($"{item.Key}.dat", item.Value);
             }
         }
 
@@ -65,11 +58,42 @@ namespace NimbusFox.WorldEdit {
             if (!_undoData.ContainsKey(entity.PlayerEntityLogic.Uid())) {
                 var data = new RedoUndo();
 
-                if (FoxCore.FileManager.FileExists($"{entity.PlayerEntityLogic.Uid()}.dat")) {
-                    data = FoxCore.FileManager.ReadFile<RedoUndo>($"{entity.PlayerEntityLogic.Uid()}.dat");
+                var pause = false;
+
+                if (FoxCore.DirectoryManager.FileExists($"{entity.PlayerEntityLogic.Uid()}.dat")) {
+                    pause = true;
+                    FoxCore.DirectoryManager.ReadFile<RedoUndo>($"{entity.PlayerEntityLogic.Uid()}.dat", data1 => {
+                        data = data1;
+
+                        var dir = FoxCore.DirectoryManager.FetchDirectory(entity.PlayerEntityLogic.Uid());
+
+                        var files = dir.Files;
+
+                        foreach (var id in new List<Guid>(data.ID.Keys)) {
+                            if (!files.Contains(id.ToString())) {
+                                data.ID.Remove(id);
+
+                                if (data.Redo.Contains(id)) {
+                                    data.Redo.Remove(id);
+                                }
+
+                                if (data.Undo.Remove(id)) {
+                                    data.Undo.Remove(id);
+                                }
+                            }
+                        }
+
+                        if (!UndoClone().ContainsKey(entity.PlayerEntityLogic.Uid())) {
+                            _undoData.Add(entity.PlayerEntityLogic.Uid(), data);
+                        }
+
+                        pause = false;
+                    });
+                } else {
+                    _undoData.Add(entity.PlayerEntityLogic.Uid(), new RedoUndo());
                 }
 
-                _undoData.Add(entity.PlayerEntityLogic.Uid(), data);
+                while(pause) { }
             }
         }
 
@@ -152,35 +176,11 @@ namespace NimbusFox.WorldEdit {
                     last.Key.Y + clipboardVector.Y + entityVector.Y,
                     last.Key.Z + clipboardVector.Z + entityVector.Z);
 
+                var vc = new VectorCubeI(min, max);
+
+                SaveUndo(entity, vc.Start, vc.End);
+
                 var current = FoxCore.ParticleManager.Add(min, max, "mods.nimbusfox.worldedit.particles.region");
-
-                var undoRedo = UndoClone()[entity.PlayerEntityLogic.Uid()];
-
-                undoRedo.Redo.Clear();
-
-                var old = new List<UndoData>();
-
-                Fox_Core.VectorLoop(min, max, (x, y, z) => {
-                    Tile oldTile;
-                    if (FoxCore.WorldManager.World.ReadTile(new Vector3I(x, y, z), TileAccessFlags.SynchronousWait,
-                        out oldTile)) {
-                        old.Add(new UndoData {
-                            Location = new Vector3I(x, y, z),
-                            Tile = new TileData {
-                                TileCode = oldTile.Configuration.Code,
-                                Variant = oldTile.Variant()
-                            }
-                        });
-                    }
-                });
-
-                var key = Guid.NewGuid();
-
-                undoRedo.Undo.Add(key, old);
-
-                undoRedo.ID.Add(key, new VectorCubeI(min, max));
-
-                Flush();
 
                 foreach (var item in target.ClipBoard) {
                     var vector = new Vector3I(entityVector.X + clipboardVector.X + item.Key.X,
@@ -245,35 +245,11 @@ namespace NimbusFox.WorldEdit {
 
             var newTile = newTileConfig.MakeTile();
 
+            var vc = new VectorCubeI(target.Pos1.From3Dto3I(), target.Pos2.From3Dto3I());
+
+            SaveUndo(entity, vc.Start, vc.End, true, newKindCode);
+
             var count = 0;
-
-            var undoRedo = UndoClone()[entity.PlayerEntityLogic.Uid()];
-
-            undoRedo.Redo.Clear();
-
-            var old = new List<UndoData>();
-
-            Fox_Core.VectorLoop(target.Pos1.From3Dto3I(), target.Pos2.From3Dto3I(), (x, y, z) => {
-                Tile oldTile;
-                if (FoxCore.WorldManager.World.ReadTile(new Vector3I(x, y, z), TileAccessFlags.SynchronousWait,
-                    out oldTile)) {
-                    old.Add(new UndoData {
-                        Location = new Vector3I(x, y, z),
-                        Tile = new TileData {
-                            TileCode = oldTile.Configuration.Code,
-                            Variant = oldTile.Variant()
-                        }
-                    });
-                }
-            });
-
-            var key = Guid.NewGuid();
-
-            undoRedo.Undo.Add(key, old);
-
-            undoRedo.ID.Add(key, new VectorCubeI(target.Pos1.From3Dto3I(), target.Pos2.From3Dto3I()));
-
-            Flush();
 
             var current = FoxCore.ParticleManager.Add(target.Pos1, target.Pos2, "mods.nimbusfox.worldedit.particles.region");
 
@@ -336,47 +312,28 @@ namespace NimbusFox.WorldEdit {
 
             var newTile = newTileConfig.MakeTile();
 
+            var vc = new VectorCubeI(target.Pos1.From3Dto3I(), target.Pos2.From3Dto3I());
+
+            SaveUndo(entity, vc.Start, vc.End, true, kindCode);
+
             var count = 0;
 
             var current = FoxCore.ParticleManager.Add(target.Pos1, target.Pos2, "mods.nimbusfox.worldedit.particles.region");
 
-            var undoRedo = UndoClone()[entity.PlayerEntityLogic.Uid()];
-
-            undoRedo.Redo.Clear();
-
-            var old = new List<UndoData>();
-
-            Fox_Core.VectorLoop(target.Pos1.From3Dto3I(), target.Pos2.From3Dto3I(), (x, y, z) => {
-                Tile oldTile;
-                if (FoxCore.WorldManager.World.ReadTile(new Vector3I(x, y, z), TileAccessFlags.SynchronousWait,
-                    out oldTile)) {
-                    old.Add(new UndoData {
-                        Location = new Vector3I(x, y, z),
-                        Tile = new TileData {
-                            TileCode = oldTile.Configuration.Code,
-                            Variant = oldTile.Variant()
-                        }
-                    });
-                }
-            });
-
-            var key = Guid.NewGuid();
-
-            undoRedo.Undo.Add(key, old);
-
-            undoRedo.ID.Add(key, new VectorCubeI(target.Pos1.From3Dto3I(), target.Pos2.From3Dto3I()));
-
-            Flush();
-
             var list = new List<RenderItem>();
 
             Fox_Core.VectorLoop(target.Pos1, target.Pos2, (x, y, z) => {
-                list.Add(new RenderItem {
-                    Location = new Vector3I(x, y, z),
-                    ParticleGuid = current,
-                    Tile = newTile
-                });
-                count++;
+                Tile tile;
+                if (FoxCore.WorldManager.Universe.ReadTile(new Vector3I(x, y, z), TileAccessFlags.SynchronousWait,
+                    out tile)) {
+                    if (!string.Equals(tile.Configuration.Code, kindCode, StringComparison.CurrentCultureIgnoreCase))
+                    list.Add(new RenderItem {
+                        Location = new Vector3I(x, y, z),
+                        ParticleGuid = current,
+                        Tile = newTile
+                    });
+                    count++;
+                }
             });
 
             if (!WorldEditHook.ToRender.ContainsKey(current)) {
@@ -585,34 +542,9 @@ namespace NimbusFox.WorldEdit {
 
             var count = 0;
 
-            var undoRedo = UndoClone()[entity.PlayerEntityLogic.Uid()];
+            var vc = new VectorCubeI(start, end);
 
-            undoRedo.Redo.Clear();
-
-            var old = new List<UndoData>();
-
-            Fox_Core.VectorLoop(start, end, (x, y, z) => {
-                Tile oldTile;
-                if (FoxCore.WorldManager.World.ReadTile(new Vector3I(x, y, z), TileAccessFlags.SynchronousWait,
-                    out oldTile)) {
-                    old.Add(new UndoData {
-                        Location = new Vector3I(x, y, z),
-                        Tile = new TileData {
-                            TileCode = oldTile.Configuration.Code,
-                            Variant = oldTile.Variant()
-                        }
-                    });
-                }
-            });
-
-
-            var key = Guid.NewGuid();
-
-            undoRedo.Undo.Add(key, old);
-
-            undoRedo.ID.Add(key, new VectorCubeI(start, end));
-
-            Flush();
+            SaveUndo(entity, vc.Start, vc.End, true, tile);
 
             Fox_Core.VectorLoop(start, end, (x, y, z) => {
                 Tile currentTile;
@@ -660,8 +592,8 @@ namespace NimbusFox.WorldEdit {
 
             var div = (float)parseWidth / 2;
 
-            var side1 = (int) Math.Floor(div);
-            var side2 = (int) Math.Floor(div);
+            var side1 = (int)Math.Floor(div);
+            var side2 = (int)Math.Floor(div);
 
             if (facing == Compass.NORTH || facing == Compass.SOUTH) {
                 start = new Vector3I(center.X - side1, center.Y, center.Z);
@@ -671,39 +603,15 @@ namespace NimbusFox.WorldEdit {
                 end = new Vector3I(center.X, center.Y + parseHeight, center.Z + side2);
             }
 
+            var vc = new VectorCubeI(start, end);
+
+            SaveUndo(entity, vc.Start, vc.End, true, tile);
+
             var current = FoxCore.ParticleManager.Add(start, end, "mods.nimbusfox.worldedit.particles.region");
 
             var count = 0;
 
             var list = new List<RenderItem>();
-
-            var undoRedo = UndoClone()[entity.PlayerEntityLogic.Uid()];
-
-            undoRedo.Redo.Clear();
-
-            var old = new List<UndoData>();
-
-            Fox_Core.VectorLoop(start, end, (x, y, z) => {
-                Tile oldTile;
-                if (FoxCore.WorldManager.World.ReadTile(new Vector3I(x, y, z), TileAccessFlags.SynchronousWait,
-                    out oldTile)) {
-                    old.Add(new UndoData {
-                        Location = new Vector3I(x, y, z),
-                        Tile = new TileData {
-                            TileCode = oldTile.Configuration.Code,
-                            Variant = oldTile.Variant()
-                        }
-                    });
-                }
-            });
-
-            var key = Guid.NewGuid();
-
-            undoRedo.Undo.Add(key, old);
-
-            undoRedo.ID.Add(key, new VectorCubeI(start, end));
-
-            Flush();
 
             Fox_Core.VectorLoop(start, end, (x, y, z) => {
                 list.Add(new RenderItem {
@@ -728,6 +636,8 @@ namespace NimbusFox.WorldEdit {
         internal static UndoRedoResult Undo(Entity entity) {
             EntityCheck(entity);
 
+            var files = FoxCore.DirectoryManager.FetchDirectory(entity.PlayerEntityLogic.Uid());
+
             var undoRedo = UndoClone()[entity.PlayerEntityLogic.Uid()];
 
             if (!undoRedo.Undo.Any()) {
@@ -736,7 +646,7 @@ namespace NimbusFox.WorldEdit {
 
             var last = undoRedo.Undo.Last();
 
-            var id = undoRedo.ID[last.Key];
+            var id = undoRedo.ID[last];
 
             if (!WorldEditHook.CheckIfCanEdit(id.Start, id.End)) {
                 return UndoRedoResult.NotFinished;
@@ -745,38 +655,50 @@ namespace NimbusFox.WorldEdit {
             var current = FoxCore.ParticleManager.Add(id.Start, id.End,
                 "mods.nimbusfox.worldedit.particles.region");
 
-            var list = new List<RenderItem>();
+            if (!files.FileExists(last.ToString())) {
 
-            foreach (var item in new List<UndoData>(last.Value)) {
-                list.Add(new RenderItem {
-                    Location = item.Location,
-                    ParticleGuid = current,
-                    Tile = GameContext.TileDatabase.GetTileConfiguration(item.Tile.TileCode).MakeTile(item.Tile.Variant)
-                });
-                Tile oldTile;
-                if (FoxCore.WorldManager.World.ReadTile(item.Location, TileAccessFlags.SynchronousWait, out oldTile)) {
-                    item.Tile.TileCode = oldTile.Configuration.Code;
-                    item.Tile.Variant = oldTile.Variant();
-                }
             }
 
-            if (!WorldEditHook.ToRender.ContainsKey(current)) {
-                WorldEditHook.ToRender.Add(current, new List<RenderItem>());
-            }
-
-            WorldEditHook.ToRender[current].AddRange(list);
             WorldEditHook.ForbidEditing.Add(current, id);
 
-            undoRedo.Undo.Remove(last.Key);
-            undoRedo.Redo.Add(last.Key, last.Value);
+            SaveUndo(entity, id.Start, id.End, false);
 
-            Flush();
+            files.ReadFile<List<UndoData>>(last.ToString(), data => {
+
+                var list = new List<RenderItem>();
+                foreach (var item in data) {
+                    list.Add(new RenderItem {
+                        Location = item.Location,
+                        ParticleGuid = current,
+                        Tile = GameContext.TileDatabase.GetTileConfiguration(item.Tile.TileCode).MakeTile(item.Tile.Variant)
+                    });
+                    Tile oldTile;
+                    if (FoxCore.WorldManager.World.ReadTile(item.Location, TileAccessFlags.SynchronousWait, out oldTile)) {
+                        item.Tile.TileCode = oldTile.Configuration.Code;
+                        item.Tile.Variant = oldTile.Variant();
+                    }
+                }
+
+                if (!WorldEditHook.ToRender.ContainsKey(current)) {
+                    WorldEditHook.ToRender.Add(current, list);
+                } else {
+                    WorldEditHook.ToRender[current].AddRange(list);
+                }
+
+                files.DeleteFile(last.ToString());
+                undoRedo.ID.Remove(last);
+                undoRedo.Undo.Remove(last);
+
+                Flush();
+            });
 
             return UndoRedoResult.Success;
         }
 
         internal static UndoRedoResult Redo(Entity entity) {
             EntityCheck(entity);
+
+            var files = FoxCore.DirectoryManager.FetchDirectory(entity.PlayerEntityLogic.Uid());
 
             var undoRedo = UndoClone()[entity.PlayerEntityLogic.Uid()];
 
@@ -786,7 +708,7 @@ namespace NimbusFox.WorldEdit {
 
             var last = undoRedo.Redo.Last();
 
-            var id = undoRedo.ID[last.Key];
+            var id = undoRedo.ID[last];
 
             if (!WorldEditHook.CheckIfCanEdit(id.Start, id.End)) {
                 return UndoRedoResult.NotFinished;
@@ -795,32 +717,43 @@ namespace NimbusFox.WorldEdit {
             var current = FoxCore.ParticleManager.Add(id.Start, id.End,
                 "mods.nimbusfox.worldedit.particles.region");
 
-            var list = new List<RenderItem>();
+            if (!files.FileExists(last.ToString())) {
 
-            foreach (var item in last.Value) {
-                list.Add(new RenderItem {
-                    Location = item.Location,
-                    ParticleGuid = current,
-                    Tile = GameContext.TileDatabase.GetTileConfiguration(item.Tile.TileCode).MakeTile(item.Tile.Variant)
-                });
-                Tile oldTile;
-                if (FoxCore.WorldManager.World.ReadTile(item.Location, TileAccessFlags.SynchronousWait, out oldTile)) {
-                    item.Tile.TileCode = oldTile.Configuration.Code;
-                    item.Tile.Variant = oldTile.Variant();
-                }
             }
 
-            if (!WorldEditHook.ToRender.ContainsKey(current)) {
-                WorldEditHook.ToRender.Add(current, new List<RenderItem>());
-            }
-
-            WorldEditHook.ToRender[current].AddRange(list);
             WorldEditHook.ForbidEditing.Add(current, id);
 
-            undoRedo.Redo.Remove(last.Key);
-            undoRedo.Undo.Add(last.Key, last.Value);
+            SaveUndo(entity, id.Start, id.End);
 
-            Flush();
+            files.ReadFile<List<UndoData>>(last.ToString(), data => {
+
+                var list = new List<RenderItem>();
+
+                foreach (var item in data) {
+                    list.Add(new RenderItem {
+                        Location = item.Location,
+                        ParticleGuid = current,
+                        Tile = GameContext.TileDatabase.GetTileConfiguration(item.Tile.TileCode).MakeTile(item.Tile.Variant)
+                    });
+                    Tile oldTile;
+                    if (FoxCore.WorldManager.World.ReadTile(item.Location, TileAccessFlags.SynchronousWait, out oldTile)) {
+                        item.Tile.TileCode = oldTile.Configuration.Code;
+                        item.Tile.Variant = oldTile.Variant();
+                    }
+                }
+
+                if (!WorldEditHook.ToRender.ContainsKey(current)) {
+                    WorldEditHook.ToRender.Add(current, list);
+                } else {
+                    WorldEditHook.ToRender[current].AddRange(list);
+                }
+
+                files.DeleteFile(last.ToString());
+                undoRedo.ID.Remove(last);
+                undoRedo.Redo.Remove(last);
+
+                Flush();
+            });
 
             return UndoRedoResult.Success;
         }
@@ -833,6 +766,8 @@ namespace NimbusFox.WorldEdit {
             if (target.Pos1 == default(Vector3D) || target.Pos2 == default(Vector3D)) {
                 return;
             }
+
+            var targetcube = new VectorCubeI(target.Pos1.From3Dto3I(), target.Pos2.From3Dto3I());
 
             var facing = entity.Logic.Heading().GetDirection();
 
@@ -885,6 +820,8 @@ namespace NimbusFox.WorldEdit {
                     return;
             }
 
+            var oldClipboard = target.ClipBoard;
+
             Copy(entity);
 
             var cube = new VectorCubeI(target.ClipBoard.Keys.First(), target.ClipBoard.Keys.Last());
@@ -910,10 +847,51 @@ namespace NimbusFox.WorldEdit {
                     target.ClipBoardOffset = new Vector3D(0, -y * i, 0);
                 }
 
-                Paste(entity, true, target.Pos1.From3Dto3I());
+                Paste(entity, true, targetcube.Start);
             }
 
             target.ClipBoardOffset = oldOffset;
+            target.ClipBoard = oldClipboard;
+        }
+
+        public static void SaveUndo(Entity entity, Vector3I start, Vector3I end, bool undo = true, string exclude = null) {
+            EntityCheck(entity);
+            var undoRedo = UndoClone()[entity.PlayerEntityLogic.Uid()];
+
+            undoRedo.Redo.Clear();
+
+            var old = new List<UndoData>();
+
+            Fox_Core.VectorLoop(start, end, (x, y, z) => {
+                Tile tile;
+                var vector = new Vector3I(x, y, z);
+                if (FoxCore.WorldManager.World.ReadTile(vector, TileAccessFlags.None, out tile)) {
+                    if (tile.Configuration.Code.ToLower() != exclude?.ToLower())
+                    old.Add(new UndoData {
+                        Location = vector,
+                        Tile = new TileData {
+                            TileCode = tile.Configuration.Code,
+                            Variant = tile.Variant()
+                        }
+                    });
+                }
+            });
+
+            var dir = FoxCore.DirectoryManager.FetchDirectory(entity.PlayerEntityLogic.Uid());
+
+            var key = Guid.NewGuid();
+
+            dir.WriteFile(key.ToString(), old, () => {
+                if (undo) {
+                    undoRedo.Undo.Add(key);
+                } else {
+                    undoRedo.Redo.Add(key);
+                }
+
+                undoRedo.ID.Add(key, new VectorCubeI(start, end));
+
+                Flush();
+            });
         }
     }
 }

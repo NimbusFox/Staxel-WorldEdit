@@ -42,8 +42,8 @@ namespace NimbusFox.WorldEdit {
             WorldEditManager.FoxCore.EntityFollowParticleManager.DrawParticles();
 
             foreach (var toRender in new Dictionary<Guid, List<RenderItem>>(ToRender)) {
-                foreach (var render in new List<RenderItem>(toRender.Value).Take(250)) {
-                    if (universe.World.PlaceTile(render.Location, render.Tile, TileAccessFlags.SynchronousWait)) {
+                foreach (var render in new List<RenderItem>(toRender.Value).Take(25)) {
+                    if (universe.World.PlaceTile(render.Location, render.Tile, TileAccessFlags.None)) {
                         toRender.Value.Remove(render);
                         if (!toRender.Value.Any()) {
                             ToRender.Remove(toRender.Key);
