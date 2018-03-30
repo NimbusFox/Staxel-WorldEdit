@@ -19,7 +19,7 @@ namespace NimbusFox.WorldEdit.Staxel.Commands {
                 var newCode = "";
 
                 if (bits.Length > 0) {
-                    newCode = bits[0];
+                    newCode = WorldEditManager.FoxCore.TileManager.GetTileCode(bits[0]);
                 }
 
                 var player = WorldEditManager.FoxCore.UserManager.GetPlayerEntityByUid(connection.Credentials.Uid);

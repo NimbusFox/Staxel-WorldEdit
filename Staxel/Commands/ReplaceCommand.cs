@@ -20,11 +20,11 @@ namespace NimbusFox.WorldEdit.Staxel.Commands {
                 var oldCode = "";
 
                 if (bits.Length > 0) {
-                    newCode = bits[0];
+                    newCode = WorldEditManager.FoxCore.TileManager.GetTileCode(bits[0]);
                 }
 
                 if (bits.Length > 1) {
-                    oldCode = bits[1];
+                    oldCode = WorldEditManager.FoxCore.TileManager.GetTileCode(bits[1]);
                 }
 
                 var player = WorldEditManager.FoxCore.UserManager.GetPlayerEntityByUid(connection.Credentials.Uid);

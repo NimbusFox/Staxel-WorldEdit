@@ -29,7 +29,7 @@ namespace NimbusFox.WorldEdit.Staxel.Commands {
                 }
 
                 if (bits.Length >= 4) {
-                    tile = bits[3];
+                    tile = WorldEditManager.FoxCore.TileManager.GetTileCode(bits[3]);
                 }
 
                 long tileCount;
