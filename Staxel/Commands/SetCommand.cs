@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NimbusFox.Module.ShortCodes;
 using NimbusFox.WorldEdit.Enums;
 using Plukit.Base;
 using Staxel.Commands;
@@ -19,7 +20,7 @@ namespace NimbusFox.WorldEdit.Staxel.Commands {
                 var newCode = "";
 
                 if (bits.Length > 0) {
-                    newCode = WorldEditManager.FoxCore.TileManager.GetTileCode(bits[0]);
+                    newCode = TileShortCodes.GetTileCode(bits[0]);
                 }
 
                 var player = WorldEditManager.FoxCore.UserManager.GetPlayerEntityByUid(connection.Credentials.Uid);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NimbusFox.Module.ShortCodes;
 using Plukit.Base;
 using Staxel.Commands;
 using Staxel.Server;
@@ -29,7 +30,7 @@ namespace NimbusFox.WorldEdit.Staxel.Commands {
                 }
 
                 if (bits.Length >= 4) {
-                    tile = WorldEditManager.FoxCore.TileManager.GetTileCode(bits[3]);
+                    tile = TileShortCodes.GetTileCode(bits[3]);
                 }
 
                 long tileCount;

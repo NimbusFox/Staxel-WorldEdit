@@ -15,6 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NimbusFox.FoxCore;
 using NimbusFox.FoxCore.Classes;
+using NimbusFox.Module.ShortCodes;
 using NimbusFox.WorldEdit.Classes;
 using NimbusFox.WorldEdit.Enums;
 using Staxel;
@@ -529,11 +530,11 @@ namespace NimbusFox.WorldEdit {
             var parseSize = size <= 0 ? 0 : size;
             tileCount = 0;
 
-            if (!FoxCore.TileManager.IsValidTile(tile)) {
+            if (!TileShortCodes.IsValidTile(tile)) {
                 return false;
             }
 
-            var newTile = FoxCore.TileManager.GetTile(tile);
+            var newTile = TileShortCodes.GetTile(tile);
 
             var current = entity.Physics.BottomPosition().From3Dto3I();
 
@@ -570,11 +571,11 @@ namespace NimbusFox.WorldEdit {
             var parseHeight = height <= 0 ? 0 : height;
             tileCount = 0;
 
-            if (!FoxCore.TileManager.IsValidTile(tile)) {
+            if (!TileShortCodes.IsValidTile(tile)) {
                 return false;
             }
 
-            var newTile = FoxCore.TileManager.GetTile(tile);
+            var newTile = TileShortCodes.GetTile(tile);
 
             var facing = entity.PlayerEntityLogic.Heading().GetDirection();
 
