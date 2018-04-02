@@ -28,9 +28,10 @@ using Color = Microsoft.Xna.Framework.Color;
 namespace NimbusFox.WorldEdit {
     public class WorldEditManager {
         internal static Fox_Core FoxCore;
+        internal static RegionManager RegionManager;
         private static Dictionary<Entity, UserData> _positions;
         private static Dictionary<string, RedoUndo> _undoData;
-
+        
         private static Dictionary<Entity, UserData> PositionClone() {
             return new Dictionary<Entity, UserData>(_positions);
         }
@@ -40,9 +41,10 @@ namespace NimbusFox.WorldEdit {
         }
 
         internal static void Init() {
-            FoxCore = new Fox_Core("NimbusFox", "WorldEdit", "V0.1");
+            FoxCore = new Fox_Core("NimbusFox", "WorldEdit", "V0.2");
             _positions = new Dictionary<Entity, UserData>();
             _undoData = new Dictionary<string, RedoUndo>();
+            RegionManager = new RegionManager();
         }
 
         internal static void Flush() {
@@ -101,14 +103,17 @@ namespace NimbusFox.WorldEdit {
         private static void CreateRegion(Entity entity) {
             var target = PositionClone()[entity];
 
-            var start = target.Pos1 != default(Vector3D) ? target.Pos1 : target.Pos2;
-            var end = target.Pos2 != default(Vector3D) ? target.Pos2 : target.Pos1;
-
             if (target.RegionGuid != Guid.Empty) {
-                FoxCore.ParticleManager.Remove(target.RegionGuid);
+                RegionManager.Remove(target.RegionGuid);
             }
 
-            target.RegionGuid = FoxCore.ParticleManager.Add(start, end, "mods.nimbusfox.worldedit.particles.region");
+            if (target.Pos1 != default(Vector3D) && target.Pos2 == default(Vector3D)) {
+                target.RegionGuid = RegionManager.Add(target.Pos1.From3Dto3I(), Tiles.Default);
+            } else if (target.Pos2 != default(Vector3D) && target.Pos1 == default(Vector3D)) {
+                target.RegionGuid = RegionManager.Add(target.Pos2.From3Dto3I(), Tiles.Default);
+            } else {
+                target.RegionGuid = RegionManager.AddCube(target.Pos1.From3Dto3I(), target.Pos2.From3Dto3I(), Tiles.Default);
+            }
         }
 
         internal static void AddPos1(Entity entity) {

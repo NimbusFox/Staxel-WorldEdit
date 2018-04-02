@@ -31,8 +31,12 @@ namespace NimbusFox.WorldEdit {
             WorldEditManager.Init();
         }
         public void GameContextInitializeBefore() { }
-        public void GameContextInitializeAfter() { }
-        public void GameContextDeinitialize() { }
+
+        public void GameContextInitializeAfter() {
+        }
+        public void GameContextDeinitialize() {
+            WorldEditManager.RegionManager.Dispose();
+        }
         public void GameContextReloadBefore() { }
         public void GameContextReloadAfter() { }
 

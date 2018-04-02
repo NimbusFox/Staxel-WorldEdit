@@ -1,0 +1,5 @@
+{
+  "__inherits": "mods/World Edit/Staxel/Tiles/Configs/frame.json",
+  "code": "mods.NimbusFox.WorldEdit.Maxigregrze.frame.default.corner.Down",
+  "voxels": "mods/World Edit/Staxel/Tiles/WE_Corner1.qb"
+}

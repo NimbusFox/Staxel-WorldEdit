@@ -1,0 +1,5 @@
+{
+  "__inherits": "mods/World Edit/Staxel/Tiles/Configs/frame.json",
+  "code": "mods.NimbusFox.WorldEdit.Maxigregrze.frame.default.line.XZ",
+  "voxels": "mods/World Edit/Staxel/Tiles/WE_line1.qb"
+}

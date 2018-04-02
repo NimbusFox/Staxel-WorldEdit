@@ -82,12 +82,17 @@
   <ItemGroup>
     <Compile Include="Classes\CodeEntry.cs" />
     <Compile Include="Classes\FileData.cs" />
+    <Compile Include="Classes\FrameRegion.cs" />
+    <Compile Include="Classes\FrameTiles.cs" />
     <Compile Include="Classes\RedoUndo.cs" />
     <Compile Include="Classes\RenderItem.cs" />
     <Compile Include="Classes\TileData.cs" />
+    <Compile Include="Classes\RegionManager.cs" />
+    <Compile Include="Classes\Tiles.cs" />
     <Compile Include="Classes\UndoData.cs" />
     <Compile Include="Classes\UserData.cs" />
     <Compile Include="Classes\VectorData.cs" />
+    <Compile Include="Enums\TilePlacement.cs" />
     <Compile Include="Enums\UndoRedoResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\ReplaceResult.cs" />
@@ -124,6 +129,93 @@
     <None Include="NimbusFox.WorldEdit-en-GB.lang">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Staxel\Tiles\Configs\default_l_Up.tile">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\Configs\default_l_Down.tile">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\Configs\default_corner_Up.tile">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\Configs\default_corner_Down.tile">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\Configs\default_l_Side.tile">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\Configs\default_line_Y.tile">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\Configs\default_line_XZ.tile">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\Configs\frame.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\WE_Corner1.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\WE_Corner2.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\WE_Corner3.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\WE_CornerU1.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\WE_CornerU2.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\WE_CornerU3.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\WE_L1.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\WE_L1D.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\WE_L1H.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\WE_L2.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\WE_L2D.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\WE_L2H.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\WE_L3.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\WE_L3D.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\WE_L3H.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\WE_line1.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\WE_line2.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\WE_line3.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\WE_lineV1.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\WE_lineV2.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Tiles\WE_lineV3.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Staxel\WorldEditRegion.particle">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -132,6 +224,11 @@
     <ProjectReference Include="..\Staxel-FoxCore\NimbusFox.FoxCore\NimbusFox.FoxCore.csproj">
       <Project>{8b473a82-8c34-44ea-b13d-39d0418e021f}</Project>
       <Name>NimbusFox.FoxCore</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Staxel-Module-ShortCodes\NimbusFox.Module.ShortCodes.csproj">
+      <Project>{ee7f22ba-74ff-45f8-8343-0d5a9fca86ab}</Project>
+      <Name>NimbusFox.Module.ShortCodes</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

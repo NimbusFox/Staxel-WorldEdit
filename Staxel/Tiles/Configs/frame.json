@@ -1,0 +1,10 @@
+﻿{
+  "__inherits": "staxel/tileObject/base.config",
+  "floats": true,
+  "searchable": false,
+  "collision": false,
+  "attachToBelow": false,
+  "stackSizeLimit": 1,
+  "placementDirections": [ "all" ],
+  "attachmentDirections": [ "all" ]
+}
