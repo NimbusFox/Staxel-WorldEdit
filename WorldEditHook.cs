@@ -1,16 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NimbusFox.FoxCore;
 using NimbusFox.FoxCore.Classes;
+using NimbusFox.Module.ShortCodes;
 using NimbusFox.WorldEdit.Classes;
 using Plukit.Base;
+using Staxel;
+using Staxel.Core;
+using Staxel.FoxCore.Managers;
 using Staxel.Items;
 using Staxel.Logic;
 using Staxel.Modding;
 using Staxel.Tiles;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace NimbusFox.WorldEdit {
     public class WorldEditHook : IModHookV2 {

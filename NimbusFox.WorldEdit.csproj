@@ -129,25 +129,25 @@
     <None Include="NimbusFox.WorldEdit-en-GB.lang">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Staxel\Tiles\Configs\default_l_Up.tile">
+    <None Include="Staxel\Tiles\Configs\default\l_Up.tile">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Staxel\Tiles\Configs\default_l_Down.tile">
+    <None Include="Staxel\Tiles\Configs\default\l_Down.tile">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Staxel\Tiles\Configs\default_corner_Up.tile">
+    <None Include="Staxel\Tiles\Configs\default\corner_Up.tile">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Staxel\Tiles\Configs\default_corner_Down.tile">
+    <None Include="Staxel\Tiles\Configs\default\corner_Down.tile">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Staxel\Tiles\Configs\default_l_Side.tile">
+    <None Include="Staxel\Tiles\Configs\default\l_Side.tile">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Staxel\Tiles\Configs\default_line_Y.tile">
+    <None Include="Staxel\Tiles\Configs\default\line_Y.tile">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Staxel\Tiles\Configs\default_line_XZ.tile">
+    <None Include="Staxel\Tiles\Configs\default\line_XZ.tile">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Staxel\Tiles\Configs\frame.json">
@@ -156,19 +156,7 @@
     <None Include="Staxel\Tiles\WE_Corner1.qb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Staxel\Tiles\WE_Corner2.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\WE_Corner3.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Staxel\Tiles\WE_CornerU1.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\WE_CornerU2.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\WE_CornerU3.qb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Staxel\Tiles\WE_L1.qb">
@@ -180,40 +168,10 @@
     <None Include="Staxel\Tiles\WE_L1H.qb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Staxel\Tiles\WE_L2.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\WE_L2D.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\WE_L2H.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\WE_L3.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\WE_L3D.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\WE_L3H.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Staxel\Tiles\WE_line1.qb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Staxel\Tiles\WE_line2.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\WE_line3.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Staxel\Tiles\WE_lineV1.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\WE_lineV2.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\WE_lineV3.qb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Staxel\WorldEditRegion.particle">
@@ -232,6 +190,5 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
