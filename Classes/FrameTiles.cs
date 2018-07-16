@@ -1,9 +1,4 @@
 ﻿using Staxel.Tiles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NimbusFox.WorldEdit.Classes {
     internal class FrameTiles {
@@ -72,11 +67,19 @@ namespace NimbusFox.WorldEdit.Classes {
         internal LineClass Line { get; }
         internal LClass L { get; }
         internal CornerClass Corner { get; }
+        public bool Initialized { get; }
 
         internal FrameTiles(Tile lineX, Tile lineY, Tile lSide, Tile lUp, Tile lDown, Tile cornerUp, Tile cornerDown) {
+            var def = new Tile();
+            if (lineX == def || lineY == def || lSide == def || lUp == def || lDown == def || cornerUp == def ||
+                cornerDown == def) {
+                Initialized = false;
+                return;
+            }
             Line = new LineClass(lineX, lineY);
             L = new LClass(lSide, lUp, lDown);
             Corner = new CornerClass(cornerUp, cornerDown);
+            Initialized = true;
         }
     }
 }

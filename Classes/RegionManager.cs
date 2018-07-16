@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NimbusFox.FoxCore;
 using NimbusFox.FoxCore.Classes;
 using NimbusFox.Module.ShortCodes;
@@ -70,7 +68,7 @@ namespace NimbusFox.WorldEdit.Classes {
 
             var cube = new VectorCubeI(start, end).GetOuterRegions();
 
-            Fox_Core.VectorLoop(cube.Start, cube.End, (x, y, z) => {
+            Helpers.VectorLoop(cube.Start, cube.End, (x, y, z) => {
                 var renderCount = 0;
 
                 renderCount += y == cube.Start.Y || y == cube.End.Y ? 1 : 0;

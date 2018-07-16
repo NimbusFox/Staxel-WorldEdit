@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Forms;
 using NimbusFox.FoxCore;
 using NimbusFox.FoxCore.Classes;
-using NimbusFox.Module.ShortCodes;
 using NimbusFox.WorldEdit.Classes;
 using Plukit.Base;
-using Staxel;
 using Staxel.Core;
-using Staxel.FoxCore.Managers;
 using Staxel.Items;
 using Staxel.Logic;
 using Staxel.Modding;
@@ -26,9 +21,6 @@ namespace NimbusFox.WorldEdit {
         internal static Dictionary<Guid, VectorCubeI> ForbidEditing;
 
         public void Dispose() {
-            WorldEditManager.FoxCore.ParticleManager.Dispose();
-            WorldEditManager.FoxCore.EntityParticleManager.Dispose();
-            WorldEditManager.FoxCore.EntityFollowParticleManager.Dispose();
         }
 
         public void GameContextInitializeInit() {
@@ -36,10 +28,55 @@ namespace NimbusFox.WorldEdit {
             ForbidEditing = new Dictionary<Guid, VectorCubeI>();
             NextTick = 0;
             WorldEditManager.Init();
+            if (!WorldEditManager.FoxCore.ModDirectory.FileExists("ignore.flag")) {
+                var msgBox = MessageBox.Show(@"Would you like to customise the selection region's colors?", @"Customize World Edit", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (msgBox == DialogResult.Yes) {
+                    var defaultPrimary = ColorMath.ParseString("F5C900");
+                    var defaultSecondary = Color.Black;
+
+                    var colorPicker = new ColorPicker();
+
+                    Application.Run(colorPicker);
+
+                    var primary = ColorMath.ToString(colorPicker.Primary).Substring(2);
+                    var secondary = ColorMath.ToString(colorPicker.Secondary).Substring(2);
+
+                    var blob = BlobAllocator.AcquireAllocator().NewBlob(false);
+
+                    var blob2 = blob.FetchBlob("Custom");
+
+                    blob2.SetString(ColorMath.ToString(defaultPrimary).Substring(2), primary);
+                    blob2.SetString(ColorMath.ToString(defaultSecondary).Substring(2), secondary);
+
+                    var wait = true;
+
+                    WorldEditManager.FoxCore.ModDirectory.WriteFile("palettes.json", blob, () => { wait = false; }, true);
+
+                    while (wait) { }
+
+                    colorPicker.Dispose();
+                }
+
+                var ms = new MemoryStream();
+                var sw = new StreamWriter(ms);
+
+                sw.Write("");
+                sw.Flush();
+
+                var streamWait = true;
+
+                WorldEditManager.FoxCore.ModDirectory.WriteFileStream("ignore.flag", ms, () => { streamWait = false; });
+
+                while (streamWait) { }
+            }
         }
-        public void GameContextInitializeBefore() { }
+
+        public void GameContextInitializeBefore() {
+        }
 
         public void GameContextInitializeAfter() {
+            
         }
         public void GameContextDeinitialize() {
             WorldEditManager.RegionManager.Dispose();
@@ -48,9 +85,6 @@ namespace NimbusFox.WorldEdit {
         public void GameContextReloadAfter() { }
 
         public void UniverseUpdateBefore(Universe universe, Timestep step) {
-            WorldEditManager.FoxCore.ParticleManager.DrawParticles();
-            WorldEditManager.FoxCore.EntityParticleManager.DrawParticles();
-            WorldEditManager.FoxCore.EntityFollowParticleManager.DrawParticles();
 
             foreach (var toRender in new Dictionary<Guid, List<RenderItem>>(ToRender)) {
                 foreach (var render in new List<RenderItem>(toRender.Value).Take(25)) {
@@ -59,7 +93,6 @@ namespace NimbusFox.WorldEdit {
                         if (!toRender.Value.Any()) {
                             ToRender.Remove(toRender.Key);
                             ForbidEditing.Remove(toRender.Key);
-                            WorldEditManager.FoxCore.ParticleManager.Remove(toRender.Key);
                         }
                     }
                 }
@@ -77,7 +110,7 @@ namespace NimbusFox.WorldEdit {
                 return true;
             }
 
-            Fox_Core.VectorLoop(start, end, (x, y, z) => { canEdit &= !CheckIfCanEdit(new Vector3I(x, y, z)); });
+            Helpers.VectorLoop(start, end, (x, y, z) => { canEdit &= !CheckIfCanEdit(new Vector3I(x, y, z)); });
 
             return canEdit;
         }

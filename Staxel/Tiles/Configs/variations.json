@@ -1,0 +1,53 @@
+﻿{
+  "Tiles": {
+    "mods.NimbusFox.WorldEdit.Maxigregrze.frame.default.corner.Down": {
+      "mods.NimbusFox.WorldEdit.Maxigregrze.frame.custom.corner.Down": {
+        "Palettes": [
+          "Custom"
+        ]
+      }
+    },
+    "mods.NimbusFox.WorldEdit.Maxigregrze.frame.default.corner.Up": {
+      "mods.NimbusFox.WorldEdit.Maxigregrze.frame.custom.corner.Up": {
+        "Palettes": [
+          "Custom"
+        ]
+      }
+    },
+    "mods.NimbusFox.WorldEdit.Maxigregrze.frame.default.l.Down": {
+      "mods.NimbusFox.WorldEdit.Maxigregrze.frame.custom.l.Down": {
+        "Palettes": [
+          "Custom"
+        ]
+      }
+    },
+    "mods.NimbusFox.WorldEdit.Maxigregrze.frame.default.l.Side": {
+      "mods.NimbusFox.WorldEdit.Maxigregrze.frame.custom.l.Side": {
+        "Palettes": [
+          "Custom"
+        ]
+      }
+    },
+    "mods.NimbusFox.WorldEdit.Maxigregrze.frame.default.l.Up": {
+      "mods.NimbusFox.WorldEdit.Maxigregrze.frame.custom.l.Up": {
+        "Palettes": [
+          "Custom"
+        ]
+      }
+    },
+    "mods.NimbusFox.WorldEdit.Maxigregrze.frame.default.line.Y": {
+      "mods.NimbusFox.WorldEdit.Maxigregrze.frame.custom.line.Y": {
+        "Palettes": [
+          "Custom"
+        ]
+      }
+    },
+    "mods.NimbusFox.WorldEdit.Maxigregrze.frame.default.line.XZ": {
+      "mods.NimbusFox.WorldEdit.Maxigregrze.frame.custom.line.XZ": {
+        "Palettes": [
+          "Custom"
+        ] 
+      } 
+    } 
+  }
+}
