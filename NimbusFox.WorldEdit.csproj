@@ -4,14 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{810F5DA1-85C1-485F-8966-F21AE69983ED}</ProjectGuid>
+    <ProjectGuid>{7CBF604C-8525-48F2-B10A-AD6501451B71}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NimbusFox.WorldEdit</RootNamespace>
     <AssemblyName>NimbusFox.WorldEdit</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>latest</LangVersion>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,50 +30,19 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FNA, Version=18.2.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Staxel\bin\FNA.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Plukit.Base">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Staxel\bin\Plukit.Base.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\Staxel\bin\Plukit.Base.dll</HintPath>
     </Reference>
     <Reference Include="Staxel">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Staxel\bin\Staxel.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\Staxel\bin\Staxel.dll</HintPath>
     </Reference>
     <Reference Include="Staxel.Auth">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Staxel\bin\Staxel.Auth.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Staxel.Checks">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Staxel\bin\Staxel.Checks.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Staxel.OggVorbis">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Staxel\bin\Staxel.OggVorbis.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Staxel.ToolUtilities">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Staxel\bin\Staxel.ToolUtilities.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Staxel.Trace">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Staxel\bin\Staxel.Trace.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Staxel.ValueSource">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Staxel\bin\Staxel.ValueSource.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\Staxel\bin\Staxel.Auth.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -82,130 +51,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\CodeEntry.cs" />
-    <Compile Include="Classes\FileData.cs" />
-    <Compile Include="Classes\FrameRegion.cs" />
-    <Compile Include="Classes\FrameTiles.cs" />
-    <Compile Include="Classes\RedoUndo.cs" />
-    <Compile Include="Classes\RenderItem.cs" />
-    <Compile Include="Classes\TileData.cs" />
-    <Compile Include="Classes\RegionManager.cs" />
-    <Compile Include="Classes\Tiles.cs" />
-    <Compile Include="Classes\UndoData.cs" />
-    <Compile Include="Classes\UserData.cs" />
-    <Compile Include="Classes\VectorData.cs" />
-    <Compile Include="ColorPicker.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ColorPicker.Designer.cs">
-      <DependentUpon>ColorPicker.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Enums\TilePlacement.cs" />
-    <Compile Include="Enums\UndoRedoResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Enums\ReplaceResult.cs" />
-    <Compile Include="Staxel\Commands\ClearCommand.cs" />
-    <Compile Include="Staxel\Commands\CopyCommand.cs" />
-    <Compile Include="Staxel\Commands\CutCommand.cs" />
-    <Compile Include="Staxel\Commands\HeadingCommand.cs" />
-    <Compile Include="Staxel\Commands\LoadCommand.cs" />
-    <Compile Include="Staxel\Commands\PasteCommand.cs" />
-    <Compile Include="Staxel\Commands\PlatformCommand.cs" />
-    <Compile Include="Staxel\Commands\Pos1Command.cs" />
-    <Compile Include="Staxel\Commands\Pos2Command.cs" />
-    <None Include="app.config" />
-    <None Include="Staxel\Items\BuilderWand\BuilderWandBuilder.cs" />
-    <None Include="Staxel\Items\BuilderWand\BuilderWand.cs" />
-    <None Include="Staxel\Items\BuilderWand\BuilderWandComponent.cs" />
-    <None Include="Staxel\Items\BuilderWand\BuilderWandComponentBuilder.cs" />
-    <None Include="Staxel\Items\BuilderWand\BuilderWandRenderer.cs" />
-    <Compile Include="Staxel\Commands\RedoCommand.cs" />
-    <Compile Include="Staxel\Commands\ReplaceCommand.cs" />
-    <Compile Include="Staxel\Commands\SaveCommand.cs" />
-    <Compile Include="Staxel\Commands\SetCommand.cs" />
-    <Compile Include="Staxel\Commands\StackCommand.cs" />
-    <Compile Include="Staxel\Commands\UndoCommand.cs" />
-    <Compile Include="Staxel\Commands\WallCommand.cs" />
-    <Compile Include="WorldEditHook.cs" />
-    <Compile Include="WorldEditManager.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="NimbusFox.WorldEdit.mod">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="NimbusFox.WorldEdit-en-GB.lang">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\Configs\default\l_Up.tile">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\Configs\default\l_Down.tile">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\Configs\default\corner_Up.tile">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\Configs\default\corner_Down.tile">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\Configs\default\l_Side.tile">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\Configs\default\line_Y.tile">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\Configs\default\line_XZ.tile">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\Configs\frame.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\Configs\variations.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\WE_Corner1.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\WE_CornerU1.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\WE_L1.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\WE_L1D.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\WE_L1H.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\WE_line1.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Tiles\WE_lineV1.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\WorldEditRegion.particle">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Staxel-FoxCore\NimbusFox.FoxCore\NimbusFox.FoxCore.csproj">
       <Project>{8b473a82-8c34-44ea-b13d-39d0418e021f}</Project>
       <Name>NimbusFox.FoxCore</Name>
-      <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Staxel-Module-ShortCodes\NimbusFox.Module.ShortCodes.csproj">
-      <Project>{ee7f22ba-74ff-45f8-8343-0d5a9fca86ab}</Project>
-      <Name>NimbusFox.Module.ShortCodes</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ColorPicker.resx">
-      <DependentUpon>ColorPicker.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
