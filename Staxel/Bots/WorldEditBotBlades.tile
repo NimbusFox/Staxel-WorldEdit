@@ -1,0 +1,6 @@
+{
+    "__inherits": "staxel/tileObject/base.config",
+    "code": "nimbusfox.worldedit.entityTile.bot.blades",
+    "voxels": "mods/World Edit/Staxel/Bots/WorldEditBotBlades.qb",
+    "searchable": false
+}

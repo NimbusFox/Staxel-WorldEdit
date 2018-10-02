@@ -1,0 +1,29 @@
+{
+    "categories": [
+
+    ],
+    "code": "nimbusfox.worldedit.item.wand.selection",
+    "icon": "mods/World Edit/Staxel/Items/Wands/SelectionWand.qb",
+    "inHand": "mods/World Edit/Staxel/Items/Wands/SelectionWand.qb",
+    "inHandOffset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "inHandRotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": -1.56
+    },
+    "usageOffset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "kind": "nimbusfox.worldedit.item.wand.selection",
+    "pricing": {
+        "buyable": false,
+        "sellPrice": 0,
+        "value": 0
+    } 
+}

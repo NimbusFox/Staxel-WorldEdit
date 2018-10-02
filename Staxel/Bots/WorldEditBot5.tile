@@ -1,0 +1,5 @@
+{
+    "__inherits": "mods/World Edit/Staxel/Bots/WorldEditBot1.tile",
+    "code": "nimbusfox.worldedit.entityTile.bot.5",
+    "voxels": "mods/World Edit/Staxel/Bots/WorldEditBot5.qb"
+}
