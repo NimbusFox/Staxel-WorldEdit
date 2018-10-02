@@ -61,6 +61,11 @@
   <ItemGroup>
     <Compile Include="Components\BotComponent.cs" />
     <Compile Include="Components\Builders\BotComponentBuilder.cs" />
+    <Compile Include="Components\Builders\SelectionWandComponentBuilder.cs" />
+    <Compile Include="Components\SelectionWandComponent.cs" />
+    <Compile Include="Entities\Bot\BorderBotEntityBuilder.cs" />
+    <Compile Include="Entities\Bot\BorderBotEntityLogic.cs" />
+    <Compile Include="Entities\Bot\BorderBotEntityPainter.cs" />
     <Compile Include="Entities\Bot\BotEntityBuilder.cs" />
     <Compile Include="Entities\Bot\BotEntityLogic.cs" />
     <Compile Include="Entities\Bot\BotEntityPainter.cs" />
@@ -81,6 +86,12 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Staxel\Border\Border.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Border\Border.tile">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Staxel\Bots\Symbols\CopySymbol.qb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -88,6 +99,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Staxel\Bots\Symbols\EmptySymbol.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Bots\Symbols\ErrorSymbol.qb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Staxel\Bots\Symbols\FillSymbol.qb">
@@ -168,7 +182,9 @@
     <None Include="Staxel\Items\Wands\RemoveWand.qb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Staxel\Items\Wands\SelectionWand.item" />
+    <None Include="Staxel\Items\Wands\SelectionWand.item">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Staxel\Items\Wands\SelectionWand.qb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -27,11 +27,15 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
         private bool _up = true;
         private float _add;
 
+        private NameTag _nameTag;
+
         public BotEntityPainter() {
             _created = DateTime.UtcNow;
         }
 
-        protected override void Dispose(bool disposing) { }
+        protected override void Dispose(bool disposing) {
+            _nameTag.Dispose();
+        }
 
         public override void RenderUpdate(Timestep timestep, Entity entity, AvatarController avatarController,
             EntityUniverseFacade facade,
@@ -46,6 +50,10 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
                     _bladeTileCode = logic.BotComponent.BladeModel;
                     _bladeTile = Helpers.MakeTile(_bladeTileCode);
                 }
+
+                if (_nameTag == null) {
+                    _nameTag = ClientContext.NameTagRenderer.RegisterNameTag(entity.Id);
+                }
             }
         }
 
@@ -53,6 +61,8 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
             if (entity.Logic is BotEntityLogic logic) {
                 entity.Physics.BoundingShape = Shape.MakeCenteredBox(Vector3D.Zero, logic.BotComponent.BoundingBox);
                 entity.Physics.CollisionShape = entity.Physics.BoundingShape;
+
+                _nameTag?.Setup(entity.Physics.Position, Constants.NameTagDefaultOffset, $"{logic.Owner} ({ClientContext.LanguageDatabase.GetTranslationString(logic.Mode)})", false, false, true);
             }
         }
         public override void ClientPostUpdate(Timestep timestep, Entity entity, AvatarController avatarController, EntityUniverseFacade facade) { }
@@ -62,6 +72,9 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
 
         public override void Render(DeviceContext graphics, Matrix4F matrix, Vector3D renderOrigin, Entity entity,
             AvatarController avatarController, Timestep renderTimestep, RenderMode renderMode) {
+            if (renderMode != RenderMode.Normal && renderMode != RenderMode.Outline)
+                return;
+
             if (!_botTileCode.IsNullOrEmpty()) {
                 if (entity.Logic is BotEntityLogic logic) {
                     var pos = entity.Physics.Position.ToVector3F();
@@ -76,7 +89,7 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
                     _add = _up ? _add + 0.0015F : _add - 0.0015F;
                     pos.Y += _add;
 
-                    var botMatrix = Matrix.CreateFromYawPitchRoll(0, 0, 0).ToMatrix4F();
+                    var botMatrix = Matrix.CreateFromYawPitchRoll(MathHelper.ToRadians(logic.Rotation), 0, 0).ToMatrix4F();
 
                     botMatrix = Matrix4F.Multiply(botMatrix.Translate(pos.X - (float)renderOrigin.X, pos.Y - (float)renderOrigin.Y, pos.Z - (float)renderOrigin.Z), matrix);
 

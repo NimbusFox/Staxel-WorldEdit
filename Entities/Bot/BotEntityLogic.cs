@@ -14,13 +14,33 @@ using Staxel.Tiles;
 namespace NimbusFox.WorldEdit.Entities.Bot {
     public class BotEntityLogic : EntityLogic {
 
-        public string BotTile { get; private set; } = "";
+        private enum RotationNum {
+            North = 0,
+            NW = 45,
+            West = 90,
+            SW = 135,
+            South = 180,
+            SE = 225,
+            East = 270,
+            NE = 315,
+            None = -1
+        }
+
+        public string BotTile { get; private set; }
         protected Entity Entity { get; }
-        protected Entity LinkedEntity { get; }
+        protected List<Entity> LinkedEntities { get; }
         protected bool NeedStore { get; private set; }
-        public BotComponent BotComponent { get; }
-        private Vector3D _location;
+        protected bool Waiting { get; private set; }
+        public BotComponent BotComponent { get; private set; }
+        private Vector3D _destination;
         private bool _remove = false;
+        private Blob _constructBlob;
+        public int Rotation { get; private set; } = 0;
+
+        internal string Owner { get; private set; }
+        private string _ownerUid;
+
+        public string Mode { get; private set; } = "nimbusfox.worldedit.verb.idle";
 
         public BotEntityLogic(Entity entity) {
             var tile = GameContext.RandomSource.Pick(GameContext.TileDatabase.AllMaterials()
@@ -31,6 +51,10 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
             BotComponent = tile.Components.Get<BotComponent>();
 
             Entity = entity;
+
+            entity.Physics.MakePhysicsless();
+
+            LinkedEntities = new List<Entity>();
         }
 
         public override void PreUpdate(Timestep timestep, EntityUniverseFacade entityUniverseFacade) { }
@@ -40,28 +64,26 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
                 return;
             }
 
-            if (_location != Entity.Physics.Position) {
+            if (_destination != Entity.Physics.Position) {
                 const double increment = 0.005;
                 Entity.Physics.ForcedPosition(Entity.Physics.Position + new Vector3D(
-                                                  Entity.Physics.Position.X < _location.X ? increment : Entity.Physics.Position.X > _location.X ? -increment : 0,
-                                                  Entity.Physics.Position.Y < _location.Y ? increment : Entity.Physics.Position.Y > _location.Y ? -increment : 0,
-                                                  Entity.Physics.Position.Z < _location.Z ? increment : Entity.Physics.Position.Z > _location.Z ? -increment : 0));
+                                                  Entity.Physics.Position.X < _destination.X ? increment : Entity.Physics.Position.X > _destination.X ? -increment : 0,
+                                                  Entity.Physics.Position.Y < _destination.Y ? increment : Entity.Physics.Position.Y > _destination.Y ? -increment : 0,
+                                                  Entity.Physics.Position.Z < _destination.Z ? increment : Entity.Physics.Position.Z > _destination.Z ? -increment : 0));
 
-                if (_location.X - Entity.Physics.Position.X > -increment && _location.X - Entity.Physics.Position.X < increment) {
-                    Entity.Physics.ForcedPosition(new Vector3D(_location.X, Entity.Physics.Position.Y, Entity.Physics.Position.Z));
+                if (_destination.X - Entity.Physics.Position.X > -increment && _destination.X - Entity.Physics.Position.X < increment) {
+                    Entity.Physics.ForcedPosition(new Vector3D(_destination.X, Entity.Physics.Position.Y, Entity.Physics.Position.Z));
                 }
 
-                if (_location.Y - Entity.Physics.Position.Y > -increment && _location.Y - Entity.Physics.Position.Y < increment) {
-                    Entity.Physics.ForcedPosition(new Vector3D(Entity.Physics.Position.X, _location.Y, Entity.Physics.Position.Z));
+                if (_destination.Y - Entity.Physics.Position.Y > -increment && _destination.Y - Entity.Physics.Position.Y < increment) {
+                    Entity.Physics.ForcedPosition(new Vector3D(Entity.Physics.Position.X, _destination.Y, Entity.Physics.Position.Z));
                 }
 
-                if (_location.Z - Entity.Physics.Position.Z > -increment && _location.Z - Entity.Physics.Position.Z < increment) {
-                    Entity.Physics.ForcedPosition(new Vector3D(Entity.Physics.Position.X, Entity.Physics.Position.Y, _location.Z));
+                if (_destination.Z - Entity.Physics.Position.Z > -increment && _destination.Z - Entity.Physics.Position.Z < increment) {
+                    Entity.Physics.ForcedPosition(new Vector3D(Entity.Physics.Position.X, Entity.Physics.Position.Y, _destination.Z));
                 }
-
-                NeedsStore();
             } else {
-
+                
             }
         }
 
@@ -71,27 +93,14 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
             }
         }
 
-        public override void Store() {
-            if (NeedStore) {
-                Entity.Blob.SetString("botTile", BotTile);
-                Entity.Blob.FetchBlob("position").SetVector3D(Entity.Physics.Position);
-            }
-        }
-
-        public override void Restore() {
-            if (Entity.Blob.Contains("botTile")) {
-                BotTile = Entity.Blob.GetString("botTile");
-            }
-
-            if (Entity.Blob.Contains("position")) {
-                Entity.Physics.ForcedPosition(Entity.Blob.FetchBlob("position").GetVector3D());
-            }
-        }
-
         public override void Construct(Blob arguments, EntityUniverseFacade entityUniverseFacade) {
+            _constructBlob = BlobAllocator.Blob(true);
+            _constructBlob.MergeFrom(arguments);
             Entity.Physics.ForcedPosition(arguments.FetchBlob("location").GetVector3I().ToVector3D() + BotComponent.TileOffset);
+            Owner = arguments.GetString("owner");
+            _ownerUid = arguments.GetString("uid");
 
-            _location = Entity.Physics.Position;
+            _destination = Entity.Physics.Position;
 
             NeedsStore();
         }
@@ -103,15 +112,14 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
 
         public override void Interact(Entity entity, EntityUniverseFacade facade, ControlState main, ControlState alt) {
             if (alt.DownClick) {
-                facade.RemoveEntity(Entity.Id);
-
-                if (LinkedEntity != null) {
-                    if (LinkedEntity.Logic is BotEntityLogic logic) {
-                        logic.Remove();
-                    }
-                }
+                Remove();
             }
         }
+
+        public override string AltInteractVerb() {
+            return "nimbusfox.worldedit.verb.cancel";
+        }
+
         public override bool CanChangeActiveItem() {
             return false;
         }
@@ -121,11 +129,62 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
         }
 
         public override bool IsPersistent() {
-            return false;
+            return true;
         }
 
-        public override void StorePersistenceData(Blob data) { }
-        public override void RestoreFromPersistedData(Blob data, EntityUniverseFacade facade) { }
+        public override void StorePersistenceData(Blob data) {
+            data.FetchBlob("position").SetVector3D(Entity.Physics.Position);
+            data.FetchBlob("destination").SetVector3D(_destination);
+            data.SetLong("rotation", Rotation);
+            data.SetString("botTile", BotTile);
+        }
+
+        public override void RestoreFromPersistedData(Blob data, EntityUniverseFacade facade) {
+            if (data.Contains("construct")) {
+                Construct(data.FetchBlob("construct"), facade);
+            }
+
+            if (data.Contains("position")) {
+                Entity.Physics.ForcedPosition(data.FetchBlob("position").GetVector3D());
+            }
+
+            if (data.Contains("destination")) {
+                _destination = data.FetchBlob("destination").GetVector3D();
+            }
+
+            if (data.Contains("rotation")) {
+                Rotation = (int)data.GetLong("rotation");
+            }
+
+            if (data.Contains("botTile")) {
+                BotTile = data.GetString("botTile");
+
+                BotComponent = GameContext.TileDatabase.GetTileConfiguration(BotTile).Components.Get<BotComponent>();
+            }
+        }
+
+        public override void Store() {
+            if (NeedStore) {
+                Entity.Blob.SetString("botTile", BotTile);
+                Entity.Blob.SetLong("rotation", Rotation);
+                Entity.Blob.SetString("owner", Owner);
+            }
+        }
+
+        public override void Restore() {
+            if (Entity.Blob.Contains("botTile")) {
+                BotTile = Entity.Blob.GetString("botTile");
+            }
+
+            if (Entity.Blob.Contains("rotation")) {
+                Rotation = (int)Entity.Blob.GetLong("rotation");
+            }
+
+            if (Entity.Blob.Contains("owner")) {
+                Owner = Entity.Blob.GetString("owner");
+            }
+        }
+
         public override bool IsCollidable() {
             return true;
         }
@@ -134,12 +193,64 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
             NeedStore = true;
         }
 
+        private void SetRotationZ(RotationNum rotation, Vector3I location, Vector3I pos) {
+            if (location.Z > pos.Z) {
+                if (rotation == RotationNum.East) {
+                    Rotation = (int) RotationNum.NE;
+                } else if (rotation == RotationNum.West) {
+                    Rotation = (int)RotationNum.NW;
+                } else {
+                    Rotation = (int) RotationNum.North;
+                }
+            } else if (location.Z < pos.Z) {
+                if (rotation == RotationNum.East) {
+                    Rotation = (int)RotationNum.SE;
+                } else if (rotation == RotationNum.West) {
+                    Rotation = (int)RotationNum.SW;
+                } else {
+                    Rotation = (int)RotationNum.South;
+                }
+            } else {
+                if (rotation == RotationNum.None) {
+                    Rotation = (int)RotationNum.North;
+                } else {
+                    Rotation = (int) rotation;
+                }
+            }
+        }
+
         public void SetDestination(Vector3I location) {
-            _location = location.ToVector3D() + BotComponent.TileOffset;
+            var pos = new Vector3I((int) Math.Floor(Entity.Physics.Position.X - BotComponent.TileOffset.X),
+                (int) Math.Floor(Entity.Physics.Position.Y - BotComponent.TileOffset.Y),
+                (int) Math.Floor(Entity.Physics.Position.Z - BotComponent.TileOffset.Z));
+            if (location.X > pos.X) {
+                SetRotationZ(RotationNum.West, location, pos);
+            } else if (location.X < pos.X) {
+                SetRotationZ(RotationNum.East, location, pos);
+            } else {
+                SetRotationZ(RotationNum.None, location, pos);
+            }
+
+            _destination = location.ToVector3D() + BotComponent.TileOffset;
+
+            NeedsStore();
         }
 
         private void Remove() {
+            _remove = true;
+            if (LinkedEntities != null) {
+                foreach (var ent in LinkedEntities) {
+                    if (ent.Logic is BotEntityLogic logic) {
+                        logic.Remove();
+                    }
+                }
+            }
+        }
 
+        public void AddLinkedEntity(Entity entity) {
+            if (entity.Logic is BotEntityLogic && !LinkedEntities.Contains(entity)) {
+                LinkedEntities.Add(entity);
+            }
         }
     }
 }

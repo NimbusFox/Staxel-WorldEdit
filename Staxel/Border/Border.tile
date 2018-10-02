@@ -1,0 +1,6 @@
+{
+    "__inherits": "staxel/tileObject/base.config",
+    "code": "nimbusfox.worldedit.entityTile.border",
+    "voxels": "mods/World Edit/Staxel/Border/Border.qb",
+    "searchable": false
+}

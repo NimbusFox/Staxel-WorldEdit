@@ -8,14 +8,14 @@ using Staxel.Logic;
 
 namespace NimbusFox.WorldEdit.Entities.Bot {
     public class BotEntityBuilder : IEntityPainterBuilder, IEntityLogicBuilder2 {
-        public string Kind => KindCode;
+        public virtual string Kind => KindCode;
         public static string KindCode => "nimbusfox.worldedit.entity.bot";
 
-        public EntityPainter Instance() {
+        public virtual EntityPainter Instance() {
             return new BotEntityPainter();
         }
 
-        public EntityLogic Instance(Entity entity, bool server) {
+        public virtual EntityLogic Instance(Entity entity, bool server) {
             return new BotEntityLogic(entity);
         }
 
@@ -26,13 +26,15 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
             return false;
         }
 
-        public static Entity Spawn(Vector3I position, EntityUniverseFacade universe) {
-            var entity = new Entity(universe.AllocateNewEntityId(), false, KindCode, true);
+        public static Entity Spawn(Vector3I position, EntityUniverseFacade universe, string owner, string uid, string bot = "nimbusfox.worldedit.entity.bot") {
+            var entity = new Entity(universe.AllocateNewEntityId(), false, bot, true);
 
             var blob = BlobAllocator.Blob(true);
-            blob.SetString("kind", KindCode);
+            blob.SetString("kind", bot);
             blob.FetchBlob("position").SetVector3D(position.ToTileCenterVector3D());
             blob.FetchBlob("location").SetVector3I(position);
+            blob.SetString("owner", owner);
+            blob.SetString("uid", uid);
 
             entity.Construct(blob, universe);
 

@@ -13,7 +13,7 @@
     "inHandRotation": {
         "x": 0.0,
         "y": 0.0,
-        "z": -1.56
+        "z": 0.0
     },
     "usageOffset": {
         "x": 0.0,
@@ -25,5 +25,9 @@
         "buyable": false,
         "sellPrice": 0,
         "value": 0
-    } 
+    },
+    "selectionWand": {
+        "border": "nimbusfox.worldedit.entityTile.border"
+    },
+    "stackSizeLimit": 1
 }
