@@ -27,14 +27,14 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
         private bool _up = true;
         private float _add;
 
-        private NameTag _nameTag;
+        protected NameTag NameTag;
 
         public BotEntityPainter() {
             _created = DateTime.UtcNow;
         }
 
         protected override void Dispose(bool disposing) {
-            _nameTag.Dispose();
+            NameTag.Dispose();
         }
 
         public override void RenderUpdate(Timestep timestep, Entity entity, AvatarController avatarController,
@@ -51,9 +51,17 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
                     _bladeTile = Helpers.MakeTile(_bladeTileCode);
                 }
 
-                if (_nameTag == null) {
-                    _nameTag = ClientContext.NameTagRenderer.RegisterNameTag(entity.Id);
+                if (NameTag == null) {
+                    NameTag = ClientContext.NameTagRenderer.RegisterNameTag(entity.Id);
                 }
+            }
+        }
+
+        protected virtual void UpdateNameTag(Entity entity) {
+            if (entity.Logic is BotEntityLogic logic) {
+                NameTag?.Setup(entity.Physics.Position, Constants.NameTagDefaultOffset,
+                    $"{logic.Owner} ({ClientContext.LanguageDatabase.GetTranslationString(logic.Mode)})", false, false,
+                    true);
             }
         }
 
@@ -61,8 +69,7 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
             if (entity.Logic is BotEntityLogic logic) {
                 entity.Physics.BoundingShape = Shape.MakeCenteredBox(Vector3D.Zero, logic.BotComponent.BoundingBox);
                 entity.Physics.CollisionShape = entity.Physics.BoundingShape;
-
-                _nameTag?.Setup(entity.Physics.Position, Constants.NameTagDefaultOffset, $"{logic.Owner} ({ClientContext.LanguageDatabase.GetTranslationString(logic.Mode)})", false, false, true);
+                UpdateNameTag(entity);
             }
         }
         public override void ClientPostUpdate(Timestep timestep, Entity entity, AvatarController avatarController, EntityUniverseFacade facade) { }
@@ -72,7 +79,7 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
 
         public override void Render(DeviceContext graphics, Matrix4F matrix, Vector3D renderOrigin, Entity entity,
             AvatarController avatarController, Timestep renderTimestep, RenderMode renderMode) {
-            if (renderMode != RenderMode.Normal && renderMode != RenderMode.Outline)
+            if (renderMode == RenderMode.Overlay)
                 return;
 
             if (!_botTileCode.IsNullOrEmpty()) {

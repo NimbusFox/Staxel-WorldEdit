@@ -26,19 +26,25 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
             None = -1
         }
 
+        public enum BotMode : byte {
+            Idle,
+            Waiting,
+            Region
+        }
+
         public string BotTile { get; private set; }
         protected Entity Entity { get; }
         protected List<Entity> LinkedEntities { get; }
         protected bool NeedStore { get; private set; }
-        protected bool Waiting { get; private set; }
+        protected bool Waiting { get; set; }
         public BotComponent BotComponent { get; private set; }
         private Vector3D _destination;
         private bool _remove = false;
         private Blob _constructBlob;
         public int Rotation { get; private set; } = 0;
 
-        internal string Owner { get; private set; }
-        private string _ownerUid;
+        public string Owner { get; private set; }
+        protected string OwnerUid { get; private set; }
 
         public string Mode { get; private set; } = "nimbusfox.worldedit.verb.idle";
 
@@ -89,6 +95,7 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
 
         public override void PostUpdate(Timestep timestep, EntityUniverseFacade entityUniverseFacade) {
             if (_remove) {
+                Entity.SetRemoved();
                 entityUniverseFacade.RemoveEntity(Entity.Id);
             }
         }
@@ -98,7 +105,7 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
             _constructBlob.MergeFrom(arguments);
             Entity.Physics.ForcedPosition(arguments.FetchBlob("location").GetVector3I().ToVector3D() + BotComponent.TileOffset);
             Owner = arguments.GetString("owner");
-            _ownerUid = arguments.GetString("uid");
+            OwnerUid = arguments.GetString("uid");
 
             _destination = Entity.Physics.Position;
 
@@ -219,10 +226,10 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
             }
         }
 
-        public void SetDestination(Vector3I location) {
-            var pos = new Vector3I((int) Math.Floor(Entity.Physics.Position.X - BotComponent.TileOffset.X),
-                (int) Math.Floor(Entity.Physics.Position.Y - BotComponent.TileOffset.Y),
-                (int) Math.Floor(Entity.Physics.Position.Z - BotComponent.TileOffset.Z));
+        protected void SetRotation(Vector3I location) {
+            var pos = new Vector3I((int)Math.Floor(Entity.Physics.Position.X - BotComponent.TileOffset.X),
+                (int)Math.Floor(Entity.Physics.Position.Y - BotComponent.TileOffset.Y),
+                (int)Math.Floor(Entity.Physics.Position.Z - BotComponent.TileOffset.Z));
             if (location.X > pos.X) {
                 SetRotationZ(RotationNum.West, location, pos);
             } else if (location.X < pos.X) {
@@ -231,12 +238,20 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
                 SetRotationZ(RotationNum.None, location, pos);
             }
 
-            _destination = location.ToVector3D() + BotComponent.TileOffset;
-
             NeedsStore();
         }
 
-        private void Remove() {
+        public void SetDestination(Vector3I location) {
+            SetRotation(location);
+            _destination = location.ToVector3D() + BotComponent.TileOffset;
+        }
+
+        public void Teleport(Vector3I location) {
+            Rotation = (int) RotationNum.North;
+            Entity.Physics.ForcedPosition(location.ToVector3D() + BotComponent.TileOffset);
+        }
+
+        protected void Remove() {
             _remove = true;
             if (LinkedEntities != null) {
                 foreach (var ent in LinkedEntities) {
@@ -250,6 +265,21 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
         public void AddLinkedEntity(Entity entity) {
             if (entity.Logic is BotEntityLogic && !LinkedEntities.Contains(entity)) {
                 LinkedEntities.Add(entity);
+            }
+        }
+
+        public void SetMode(BotMode mode) {
+            switch (mode) {
+                default:
+                case BotMode.Idle:
+                    Mode = "nimbusfox.worldedit.verb.idle";
+                    break;
+                case BotMode.Region:
+                    Mode = "nimbusfox.worldedit.verb.region";
+                    break;
+                case BotMode.Waiting:
+                    Mode = "nimbusfox.worldedit.verb.waiting";
+                    break;
             }
         }
     }

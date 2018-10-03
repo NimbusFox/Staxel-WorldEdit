@@ -2,9 +2,9 @@
 language=English
 
 nimbusfox.worldedit.verb.cancel=Cancel
-nimbusfox.worldedit.verb.pos1=^c:24D5D8;Pos 1^c:pop;
-nimbusfox.worldedit.verb.pos2=^c:F442F4;Pos 2^c:pop;
+nimbusfox.worldedit.verb.pos1=Pos 1
+nimbusfox.worldedit.verb.pos2=Pos 2
 
 nimbusfox.worldedit.verb.idle=Idle
 nimbusfox.worldedit.verb.waiting=Waiting for destination
-nimbusfox.worldedit.verb.region=Region {0} tiles
+nimbusfox.worldedit.verb.region=Region ({0} tiles)

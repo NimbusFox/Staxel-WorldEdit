@@ -27,7 +27,8 @@
         "value": 0
     },
     "selectionWand": {
-        "border": "nimbusfox.worldedit.entityTile.border"
+        "borderLineTile": "nimbusfox.worldedit.entityTile.border.line",
+        "borderCornerTile": "nimbusfox.worldedit.entityTile.border.corner" 
     },
     "stackSizeLimit": 1
 }
