@@ -3,12 +3,16 @@
     "code": "nimbusfox.worldedit.entityTile.border.straight",
     "voxels": "mods/World Edit/Staxel/Border/BorderSelectionStraight.qb",
     "searchable": false,
-    "tileEntity": {
-        "tileOffset": {
-            "x": 0.5,
-            "y": 0.25,
-            "z": 0.5
+    "worldEditBorder": {
+        "y+": {
+            "x": 0.0,
+            "y": 1.0,
+            "z": 0.0
         },
-        "scale": 1.0
+        "y-": {
+            "x": 0.0,
+            "y": 1.0,
+            "z": 0.0
+        }
     }
 }

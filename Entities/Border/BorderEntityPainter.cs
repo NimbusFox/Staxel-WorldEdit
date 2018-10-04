@@ -42,7 +42,7 @@ namespace NimbusFox.WorldEdit.Entities.Border {
                 var cube = borderLogic.Cube;
 
                 if (cube != null) {
-                    Helpers.VectorLoop(cube.Start + new Vector3I(1, 0, 1), cube.End, (x, y, z) => {
+                    Helpers.VectorLoop(cube, (x, y, z) => {
                         var renderCount = 0;
 
                         renderCount += y == cube.Start.Y || y == cube.End.Y ? 1 : 0;
@@ -51,47 +51,97 @@ namespace NimbusFox.WorldEdit.Entities.Border {
 
                         renderCount += x == cube.Start.X || x == cube.End.X ? 1 : 0;
 
-                        if (renderCount >= 1) {
-                            Matrix4F regionMatrix;
+                        Matrix4F regionMatrix;
+                        MatrixDrawable tile;
+                        WorldEditBorderComponent worldEditComponent;
+
+                        if (renderCount == 3) {
+                            tile = borderLogic.CornerTile.Icon.Matrix();
+                            worldEditComponent = borderLogic.CornerTile.Components.Get<WorldEditBorderComponent>();
+
+                            var yaw = 0;
+
+                            if (y == cube.End.Y) {
+                                yaw = 180;
+                            }
+
+
+                        }
+
+                        if (renderCount == 2) {
+                            tile = borderLogic.LTile.Icon.Matrix();
+                            worldEditComponent = borderLogic.LTile.Components.Get<WorldEditBorderComponent>();
+
+                            var yaw = 0;
+
+
+                        }
+
+                        if (renderCount == 1) {
+                            tile = borderLogic.StraightTile.Icon.Matrix();
+                            worldEditComponent =
+                                borderLogic.StraightTile.Components.Get<WorldEditBorderComponent>();
+
+                            var scale = worldEditComponent.Scale;
+
                             if (y == cube.Start.Y) {
-                                regionMatrix = Matrix.CreateFromYawPitchRoll(0, MathHelper.ToRadians(270), 0).ToMatrix4F();
-                                regionMatrix = Matrix4F.Multiply(regionMatrix.Translate(new Vector3F(x, y, z) - renderOrigin.ToVector3F() + borderLogic.Selection1.Components.Get<TileEntityComponent>().TileOffset), matrix);
-                                borderLogic.StraightTile.Icon.Matrix().Scale(borderLogic.StraightTile.Components.Get<TileEntityComponent>().Scale).Render(graphics, regionMatrix);
+                                regionMatrix = Matrix.CreateFromYawPitchRoll(0, MathHelper.ToRadians(90), 0).ToMatrix4F();
+                                regionMatrix =
+                                    Matrix4F.Multiply(
+                                        regionMatrix.Translate(
+                                            new Vector3F(x, y, z) - renderOrigin.ToVector3F()), matrix).Translate(worldEditComponent.NY);
+                                tile.Scale(scale).Render(graphics, regionMatrix);
                                 return;
                             }
 
                             if (y == cube.End.Y) {
-                                regionMatrix = Matrix.CreateFromYawPitchRoll(0, MathHelper.ToRadians(270), 0).ToMatrix4F();
-                                regionMatrix = Matrix4F.Multiply(regionMatrix.Translate(new Vector3F(x, y, z) - renderOrigin.ToVector3F() + borderLogic.Selection1.Components.Get<TileEntityComponent>().TileOffset), matrix);
-                                borderLogic.StraightTile.Icon.Matrix().Scale(borderLogic.StraightTile.Components.Get<TileEntityComponent>().Scale).Render(graphics, regionMatrix);
+                                regionMatrix = Matrix.CreateFromYawPitchRoll(0, MathHelper.ToRadians(90), 0).ToMatrix4F();
+                                regionMatrix =
+                                    Matrix4F.Multiply(
+                                            regionMatrix.Translate(
+                                                new Vector3F(x, y, z) - renderOrigin.ToVector3F()), matrix)
+                                        .Translate(worldEditComponent.PY);
+                                tile.Scale(scale).Render(graphics, regionMatrix);
                                 return;
                             }
 
                             if (z == cube.Start.Z) {
                                 regionMatrix = Matrix.CreateFromYawPitchRoll(0, 0, 0).ToMatrix4F();
-                                regionMatrix = Matrix4F.Multiply(regionMatrix.Translate(new Vector3F(x, y, z) - renderOrigin.ToVector3F() + borderLogic.Selection1.Components.Get<TileEntityComponent>().TileOffset), matrix);
-                                borderLogic.StraightTile.Icon.Matrix().Scale(borderLogic.StraightTile.Components.Get<TileEntityComponent>().Scale).Render(graphics, regionMatrix);
+                                regionMatrix =
+                                    Matrix4F.Multiply(
+                                        regionMatrix.Translate(
+                                            new Vector3F(x, y, z) - renderOrigin.ToVector3F()), matrix).Translate(worldEditComponent.NZ);
+                                tile.Scale(scale).Render(graphics, regionMatrix);
                                 return;
                             }
 
                             if (z == cube.End.Z) {
                                 regionMatrix = Matrix.CreateFromYawPitchRoll(0, 0, 0).ToMatrix4F();
-                                regionMatrix = Matrix4F.Multiply(regionMatrix.Translate(new Vector3F(x, y, z) - renderOrigin.ToVector3F() + borderLogic.Selection1.Components.Get<TileEntityComponent>().TileOffset), matrix);
-                                borderLogic.StraightTile.Icon.Matrix().Scale(borderLogic.StraightTile.Components.Get<TileEntityComponent>().Scale).Render(graphics, regionMatrix);
+                                regionMatrix =
+                                    Matrix4F.Multiply(
+                                        regionMatrix.Translate(
+                                            new Vector3F(x, y, z) - renderOrigin.ToVector3F()), matrix).Translate(worldEditComponent.PZ);
+                                tile.Scale(scale).Render(graphics, regionMatrix);
                                 return;
                             }
 
                             if (x == cube.Start.X) {
                                 regionMatrix = Matrix.CreateFromYawPitchRoll(MathHelper.ToRadians(90), 0, 0).ToMatrix4F();
-                                regionMatrix = Matrix4F.Multiply(regionMatrix.Translate(new Vector3F(x, y, z) - renderOrigin.ToVector3F() + borderLogic.Selection1.Components.Get<TileEntityComponent>().TileOffset), matrix);
-                                borderLogic.StraightTile.Icon.Matrix().Scale(borderLogic.StraightTile.Components.Get<TileEntityComponent>().Scale).Render(graphics, regionMatrix);
+                                regionMatrix =
+                                    Matrix4F.Multiply(
+                                        regionMatrix.Translate(
+                                            new Vector3F(x, y, z) - renderOrigin.ToVector3F()), matrix).Translate(worldEditComponent.NX);
+                                tile.Scale(scale).Render(graphics, regionMatrix);
                                 return;
                             }
 
                             if (x == cube.End.X) {
                                 regionMatrix = Matrix.CreateFromYawPitchRoll(MathHelper.ToRadians(90), 0, 0).ToMatrix4F();
-                                regionMatrix = Matrix4F.Multiply(regionMatrix.Translate(new Vector3F(x, y, z) - renderOrigin.ToVector3F() + borderLogic.Selection1.Components.Get<TileEntityComponent>().TileOffset), matrix);
-                                borderLogic.StraightTile.Icon.Matrix().Scale(borderLogic.StraightTile.Components.Get<TileEntityComponent>().Scale).Render(graphics, regionMatrix);
+                                regionMatrix =
+                                    Matrix4F.Multiply(
+                                        regionMatrix.Translate(
+                                            new Vector3F(x, y, z) - renderOrigin.ToVector3F()), matrix).Translate(worldEditComponent.PX);
+                                tile.Scale(scale).Render(graphics, regionMatrix);
                                 return;
                             }
                         }

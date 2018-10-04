@@ -40,15 +40,17 @@ namespace NimbusFox.WorldEdit.Components {
         public Vector3F PY { get; }
         public Vector3F NY { get; }
 
+        public float Scale { get; }
+
         public WorldEditBorderComponent(Blob config) {
-            PXPZPY = config.Contains("x+z+y+") ? config.FetchBlob("x+z+y+").GetVector3F() : Vector3F.Zero;
-            PXPZNY = config.Contains("x+z+y-") ? config.FetchBlob("x+z+y-").GetVector3F() : Vector3F.Zero;
-            PXNZPY = config.Contains("x+z-y+") ? config.FetchBlob("x+z-y+").GetVector3F() : Vector3F.Zero;
-            PXNZNY = config.Contains("x+z-y-") ? config.FetchBlob("x+z-y-").GetVector3F() : Vector3F.Zero;
-            NXPZPY = config.Contains("x-z+y+") ? config.FetchBlob("x-z+y+").GetVector3F() : Vector3F.Zero;
-            NXPZNY = config.Contains("x-z+y-") ? config.FetchBlob("x-z+y-").GetVector3F() : Vector3F.Zero;
-            NXNZPY = config.Contains("x-z-y+") ? config.FetchBlob("x-z-y+").GetVector3F() : Vector3F.Zero;
-            NXNZNY = config.Contains("x-z-y-") ? config.FetchBlob("x-z-y-").GetVector3F() : Vector3F.Zero;
+            PXPZPY = config.Contains("x+y+z+") ? config.FetchBlob("x+y+z+").GetVector3F() : Vector3F.Zero;
+            PXPZNY = config.Contains("x+y-z+") ? config.FetchBlob("x+y-z+").GetVector3F() : Vector3F.Zero;
+            PXNZPY = config.Contains("x+y+z-") ? config.FetchBlob("x-y+z-").GetVector3F() : Vector3F.Zero;
+            PXNZNY = config.Contains("x+y-z-") ? config.FetchBlob("x-y-z-").GetVector3F() : Vector3F.Zero;
+            NXPZPY = config.Contains("x-y+z+") ? config.FetchBlob("x+y+z+").GetVector3F() : Vector3F.Zero;
+            NXPZNY = config.Contains("x-y-z+") ? config.FetchBlob("x+y-z+").GetVector3F() : Vector3F.Zero;
+            NXNZPY = config.Contains("x-y+z-") ? config.FetchBlob("x-y+z-").GetVector3F() : Vector3F.Zero;
+            NXNZNY = config.Contains("x-y-z-") ? config.FetchBlob("x-y-z-").GetVector3F() : Vector3F.Zero;
 
             PXPZ = config.Contains("x+z+") ? config.FetchBlob("x+z+").GetVector3F() : Vector3F.Zero;
             PXNZ = config.Contains("x+z-") ? config.FetchBlob("x+z-").GetVector3F() : Vector3F.Zero;
@@ -60,19 +62,23 @@ namespace NimbusFox.WorldEdit.Components {
             NXPY = config.Contains("x-y+") ? config.FetchBlob("x-y+").GetVector3F() : Vector3F.Zero;
             NXNY = config.Contains("x-y-") ? config.FetchBlob("x-y-").GetVector3F() : Vector3F.Zero;
 
-            PZPY = config.Contains("z+y+") ? config.FetchBlob("z+y+").GetVector3F() : Vector3F.Zero;
-            PZNY = config.Contains("z+y-") ? config.FetchBlob("z+y-").GetVector3F() : Vector3F.Zero;
-            NZPY = config.Contains("z-y+") ? config.FetchBlob("z-y+").GetVector3F() : Vector3F.Zero;
-            NZNY = config.Contains("z-y-") ? config.FetchBlob("z-y-").GetVector3F() : Vector3F.Zero;
+            PZPY = config.Contains("y+z+") ? config.FetchBlob("y+z+").GetVector3F() : Vector3F.Zero;
+            PZNY = config.Contains("y-z+") ? config.FetchBlob("y-z+").GetVector3F() : Vector3F.Zero;
+            NZPY = config.Contains("y+z-") ? config.FetchBlob("y+z-").GetVector3F() : Vector3F.Zero;
+            NZNY = config.Contains("y-z-") ? config.FetchBlob("y-z-").GetVector3F() : Vector3F.Zero;
 
             PX = config.Contains("x+") ? config.FetchBlob("x+").GetVector3F() : Vector3F.Zero;
+            PX = new Vector3F(PX.Z, PX.Y, PX.X);
             NX = config.Contains("x-") ? config.FetchBlob("x-").GetVector3F() : Vector3F.Zero;
+            NX = new Vector3F(PX.Z, PX.Y, PX.X);
 
             PZ = config.Contains("z+") ? config.FetchBlob("z+").GetVector3F() : Vector3F.Zero;
             NZ = config.Contains("z-") ? config.FetchBlob("z-").GetVector3F() : Vector3F.Zero;
 
             PY = config.Contains("y+") ? config.FetchBlob("y+").GetVector3F() : Vector3F.Zero;
             NY = config.Contains("y-") ? config.FetchBlob("y-").GetVector3F() : Vector3F.Zero;
+
+            Scale = (float)config.GetDouble("scale", 1);
         }
     }
 }
