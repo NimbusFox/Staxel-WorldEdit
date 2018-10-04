@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using NimbusFox.FoxCore;
+using NimbusFox.FoxCore.Classes;
 using Plukit.Base;
 using Staxel;
 using Staxel.Client;
@@ -20,9 +21,10 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
     public class BotEntityPainter : EntityPainter {
         private string _botTileCode;
         private string _bladeTileCode;
-        private Tile _botTile;
         private Tile _bladeTile;
         private DateTime _created;
+
+        private MatrixDrawable _bot;
 
         private bool _up = true;
         private float _add;
@@ -43,7 +45,8 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
             if (entity.Logic is BotEntityLogic logic) {
                 if (_botTileCode != logic.BotTile) {
                     _botTileCode = logic.BotTile;
-                    _botTile = Helpers.MakeTile(_botTileCode);
+
+                    _bot = Helpers.MakeTile(_botTileCode).Configuration.Icon.Matrix();
                 }
 
                 if (_bladeTileCode != logic.BotComponent.BladeModel) {
@@ -53,6 +56,49 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
 
                 if (NameTag == null) {
                     NameTag = ClientContext.NameTagRenderer.RegisterNameTag(entity.Id);
+                }
+
+                if (logic.UpdateColors) {
+                    var botTile = Helpers.MakeTile(_botTileCode);
+                    var matrix = botTile.Configuration.Icon as MatrixDrawable;
+                    var bot = botTile.Configuration.Icon.GetPrivateFieldValue<CompactVertexDrawable>("_drawable");
+
+                    var list = bot.CompileToVoxelVertexArray();
+
+                    for (var i = 0; i < list.Length; i++) {
+                        var colSelected = false;
+                        foreach (var color in logic.ColorReplace) {
+                            if (colSelected) {
+                                break;
+                            }
+                            for (var r = -logic.BotComponent.PaletteTolerance; r <= logic.BotComponent.PaletteTolerance; r++) {
+                                if (colSelected) {
+                                    break;
+                                }
+                                for (var g = -logic.BotComponent.PaletteTolerance; g <= logic.BotComponent.PaletteTolerance; g++) {
+                                    if (colSelected) {
+                                        break;
+                                    }
+                                    for (var b = -logic.BotComponent.PaletteTolerance; b <= logic.BotComponent.PaletteTolerance; b++) {
+                                        if (colSelected) {
+                                            break;
+                                        }
+                                        var col = list[i].Color;
+                                        var curCol = new Color(color.Key.R + r, color.Key.G + g, color.Key.B + b);
+
+                                        if (col.R == curCol.R && col.G == curCol.G && col.B == curCol.B) {
+                                            list[i].Color = new Color(color.Value.R + r, color.Value.G + g, color.Value.B + b, col.A);
+                                            colSelected = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    _bot = new VertexDrawable(list.ToList()).Matrix(matrix.MatrixValue);
+
+                    logic.UpdateColors = false;
                 }
             }
         }
@@ -100,7 +146,7 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
 
                     botMatrix = Matrix4F.Multiply(botMatrix.Translate(pos.X - (float)renderOrigin.X, pos.Y - (float)renderOrigin.Y, pos.Z - (float)renderOrigin.Z), matrix);
 
-                    _botTile.Configuration.Icon.Matrix().Render(graphics, botMatrix);
+                    _bot.Render(graphics, botMatrix);
 
                     var bladeMatrix = Matrix
                         .CreateFromYawPitchRoll(

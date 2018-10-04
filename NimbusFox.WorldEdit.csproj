@@ -127,52 +127,10 @@
     <None Include="Staxel\Bots\WorldEditBotBlades.tile">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Staxel\Bots\WorldEditBot8.tile">
+    <None Include="Staxel\Bots\WorldEditBot.qb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Staxel\Bots\WorldEditBot7.tile">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Bots\WorldEditBot6.tile">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Bots\WorldEditBot5.tile">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Bots\WorldEditBot4.tile">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Bots\WorldEditBot3.tile">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Bots\WorldEditBot2.tile">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Bots\WorldEditBot1.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Bots\WorldEditBot1.tile">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Bots\WorldEditBot2.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Bots\WorldEditBot3.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Bots\WorldEditBot4.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Bots\WorldEditBot5.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Bots\WorldEditBot6.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Bots\WorldEditBot7.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Bots\WorldEditBot8.qb">
+    <None Include="Staxel\Bots\WorldEditBot.tile">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Staxel\Bots\WorldEditBotBlades.qb">

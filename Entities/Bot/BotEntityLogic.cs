@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 using NimbusFox.FoxCore;
+using NimbusFox.FoxCore.Dependencies.Harmony;
 using NimbusFox.WorldEdit.Components;
 using Plukit.Base;
 using Staxel;
@@ -43,6 +45,12 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
         private Blob _constructBlob;
         public int Rotation { get; private set; } = 0;
 
+        // Client variables
+        internal bool UpdateColors = true;
+        // Client variables
+
+        public IReadOnlyDictionary<Color, Color> ColorReplace { get; private set; }
+
         public string Owner { get; private set; }
         protected string OwnerUid { get; private set; }
 
@@ -59,6 +67,28 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
             Entity = entity;
 
             entity.Physics.MakePhysicsless();
+
+            var colorReplace = new Dictionary<Color, Color>();
+
+            foreach (var colors in BotComponent.Palettes) {
+                if (colors.Value.Count > 0) {
+                    colorReplace.Add(colors.Key, GameContext.RandomSource.Pick(colors.Value.ToArray()));
+                } else {
+                    Color? col = null;
+
+                    while (col == null) {
+                        col = new Color(GameContext.RandomSource.Next(0, 255), GameContext.RandomSource.Next(0, 255), GameContext.RandomSource.Next(0, 255));
+
+                        if (BotComponent.IgnoreColors.Contains(col.Value)) {
+                            col = null;
+                        }
+                    }
+
+                    colorReplace.Add(colors.Key, col.Value);
+                }
+            }
+
+            ColorReplace = colorReplace;
 
             LinkedEntities = new List<Entity>();
         }
@@ -144,6 +174,13 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
             data.FetchBlob("destination").SetVector3D(_destination);
             data.SetLong("rotation", Rotation);
             data.SetString("botTile", BotTile);
+
+            if (ColorReplace.Count > 0) {
+                var blob = data.FetchBlob("colorReplace");
+                foreach (var color in ColorReplace) {
+                    blob.SetString(color.Key.PackedValue.ToString(), color.Value.PackedValue.ToString());
+                }
+            }
         }
 
         public override void RestoreFromPersistedData(Blob data, EntityUniverseFacade facade) {
@@ -168,13 +205,32 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
 
                 BotComponent = GameContext.TileDatabase.GetTileConfiguration(BotTile).Components.Get<BotComponent>();
             }
+
+            if (data.Contains("colorReplace")) {
+                var colorReplace = new Dictionary<Color, Color>();
+
+                foreach (var entry in data.FetchBlob("colorReplace").KeyValueIteratable) {
+                    if (uint.TryParse(entry.Key, out var colKey)) {
+                        if (uint.TryParse(entry.Value.GetString(), out var colVal)) {
+                            colorReplace.Add(ColorMath.FromRgba(colKey), ColorMath.FromRgba(colVal));
+                        }
+                    }
+                }
+
+                ColorReplace = colorReplace;
+            }
         }
 
         public override void Store() {
             if (NeedStore) {
                 Entity.Blob.SetString("botTile", BotTile);
                 Entity.Blob.SetLong("rotation", Rotation);
-                Entity.Blob.SetString("owner", Owner);
+                Entity.Blob.SetString("owner", Owner); if (ColorReplace.Count > 0) {
+                    var blob = Entity.Blob.FetchBlob("colorReplace");
+                    foreach (var color in ColorReplace) {
+                        blob.SetString(color.Key.PackedValue.ToString(), color.Value.PackedValue.ToString());
+                    }
+                }
             }
         }
 
@@ -189,6 +245,21 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
 
             if (Entity.Blob.Contains("owner")) {
                 Owner = Entity.Blob.GetString("owner");
+            }
+
+            if (Entity.Blob.Contains("colorReplace")) {
+                var colorReplace = new Dictionary<Color, Color>();
+
+                foreach (var entry in Entity.Blob.FetchBlob("colorReplace").KeyValueIteratable) {
+                    if (uint.TryParse(entry.Key, out var colKey)) {
+                        if (uint.TryParse(entry.Value.GetString(), out var colVal)) {
+                            colorReplace.Add(ColorMath.FromRgba(colKey), ColorMath.FromRgba(colVal));
+                        }
+                    }
+                }
+
+                ColorReplace = colorReplace;
+                UpdateColors = true;
             }
         }
 

@@ -1,9 +1,8 @@
 {
     "__inherits": "staxel/tileObject/base.config",
-    "code": "nimbusfox.worldedit.entityTile.bot.1",
-    "voxels": "mods/World Edit/Staxel/Bots/WorldEditBot1.qb",
+    "code": "nimbusfox.worldedit.entityTile.bot",
+    "voxels": "mods/World Edit/Staxel/Bots/WorldEditBot.qb",
     "searchable": false,
-    "interactVerb": "nimbusfox.worldedit.verb.cancel",
     "worldEditBot": {
         "tileOffset": {
             "x": 0.5,
@@ -23,6 +22,17 @@
                 "z": 0.0,
                 "scale": 0.5
             }
-        ]
+        ],
+        "palettes": {
+            "FF7C7C7C": []
+        },
+        "ignoreColors": [
+            "FF4B4B4B",
+            "FF3D3D3D",
+            "FF303030",
+            "FF000000",
+            "FFFFFFFF"
+        ],
+        "paletteTolerance": 6
     }
 }
