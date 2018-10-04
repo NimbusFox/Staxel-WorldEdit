@@ -57,8 +57,7 @@ namespace NimbusFox.WorldEdit.Items.Wands {
 
         protected void CreateSelectionEntity(Entity entity, EntityUniverseFacade facade, Vector3I location) {
             if (entity.Logic is PlayerEntityLogic logic) {
-                //_selectionEntity = BorderEntityBuilder.Spawn(location, facade, logic.Uid());
-                BotEntityBuilder.Spawn(location, facade, logic.DisplayName(), logic.Uid());
+                _selectionEntity = BorderEntityBuilder.Spawn(location, facade, logic.Uid());
             }
         }
 

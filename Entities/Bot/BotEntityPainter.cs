@@ -59,38 +59,23 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
                 }
 
                 if (logic.UpdateColors) {
+                    WorldEditHook.Instance.CreateCache();
+
                     var botTile = Helpers.MakeTile(_botTileCode);
                     var matrix = botTile.Configuration.Icon as MatrixDrawable;
                     var bot = botTile.Configuration.Icon.GetPrivateFieldValue<CompactVertexDrawable>("_drawable");
 
                     var list = bot.CompileToVoxelVertexArray();
 
-                    for (var i = 0; i < list.Length; i++) {
-                        var colSelected = false;
-                        foreach (var color in logic.ColorReplace) {
-                            if (colSelected) {
-                                break;
-                            }
-                            for (var r = -logic.BotComponent.PaletteTolerance; r <= logic.BotComponent.PaletteTolerance; r++) {
-                                if (colSelected) {
-                                    break;
-                                }
-                                for (var g = -logic.BotComponent.PaletteTolerance; g <= logic.BotComponent.PaletteTolerance; g++) {
-                                    if (colSelected) {
-                                        break;
-                                    }
-                                    for (var b = -logic.BotComponent.PaletteTolerance; b <= logic.BotComponent.PaletteTolerance; b++) {
-                                        if (colSelected) {
-                                            break;
-                                        }
-                                        var col = list[i].Color;
-                                        var curCol = new Color(color.Key.R + r, color.Key.G + g, color.Key.B + b);
-
-                                        if (col.R == curCol.R && col.G == curCol.G && col.B == curCol.B) {
-                                            list[i].Color = new Color(color.Value.R + r, color.Value.G + g, color.Value.B + b, col.A);
-                                            colSelected = true;
-                                        }
-                                    }
+                    if (WorldEditHook.Cache.ContainsKey(_botTileCode)) {
+                        foreach (var cache in WorldEditHook.Cache[_botTileCode]) {
+                            foreach (var color in logic.ColorReplace) {
+                                if (color.Key.R + cache.Value.r == list[cache.Key].Color.R &&
+                                    color.Key.G + cache.Value.g == list[cache.Key].Color.G &&
+                                    color.Key.B + cache.Value.b == list[cache.Key].Color.B) {
+                                    list[cache.Key].Color = new Color(color.Value.R + cache.Value.r,
+                                        color.Value.G + cache.Value.g, color.Value.B + cache.Value.b,
+                                        list[cache.Key].Color.A);
                                 }
                             }
                         }
