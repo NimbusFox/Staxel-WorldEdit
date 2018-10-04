@@ -1,0 +1,14 @@
+{
+    "__inherits": "staxel/tileObject/base.config",
+    "code": "nimbusfox.worldedit.entityTile.border.point.2",
+    "voxels": "mods/World Edit/Staxel/Border/BorderSelectionPoint2.qb",
+    "searchable": false,
+    "tileEntity": {
+        "tileOffset": {
+            "x": 0.5,
+            "y": 0.25,
+            "z": 0.5
+        },
+        "scale": 1.5
+    }
+}

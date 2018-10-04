@@ -62,7 +62,11 @@
     <Compile Include="Components\BotComponent.cs" />
     <Compile Include="Components\Builders\BotComponentBuilder.cs" />
     <Compile Include="Components\Builders\SelectionWandComponentBuilder.cs" />
+    <Compile Include="Components\Builders\TileEntityComponentBuilder.cs" />
+    <Compile Include="Components\Builders\WorldEditBorderComponentBuilder.cs" />
     <Compile Include="Components\SelectionWandComponent.cs" />
+    <Compile Include="Components\TileEntityComponent.cs" />
+    <Compile Include="Components\WorldEditBorderComponent.cs" />
     <Compile Include="Entities\Border\BorderEntityBuilder.cs" />
     <Compile Include="Entities\Border\BorderEntityLogic.cs" />
     <Compile Include="Entities\Border\BorderEntityPainter.cs" />
@@ -88,16 +92,34 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Staxel\Border\BorderCorner.tile">
+    <None Include="Staxel\Border\BorderSelectionStraight.tile">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Staxel\Border\BorderLine.tile">
+    <None Include="Staxel\Border\BorderSelectionPoint2.tile">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Staxel\Border\BorderCorner.qb">
+    <None Include="Staxel\Border\BorderSelectionPoint1.tile">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Staxel\Border\BorderLine.qb">
+    <None Include="Staxel\Border\BorderSelectionL.tile">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Border\BorderSelectionCorner.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Border\BorderSelectionCorner.tile">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Border\BorderSelectionL.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Border\BorderSelectionPoint1.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Border\BorderSelectionPoint2.qb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Staxel\Border\BorderSelectionStraight.qb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Staxel\Bots\Symbols\CopySymbol.qb">

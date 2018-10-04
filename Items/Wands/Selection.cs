@@ -47,8 +47,8 @@ namespace NimbusFox.WorldEdit.Items.Wands {
                             if (alt.DownClick) {
                                 borderLogic.SetPos2(target);
                             }
-                            
-                            borderLogic.SetBorderTiles(WandComponent.BorderLineTile, WandComponent.BorderCornerTile);
+
+                            borderLogic.SetBorderTiles(WandComponent);
                         }
                     }
                 }
@@ -84,6 +84,21 @@ namespace NimbusFox.WorldEdit.Items.Wands {
 
         public override ItemRenderer FetchRenderer() {
             return Builder.Renderer;
+        }
+
+        public bool TryGetPos(out Vector3I pos1, out Vector3I pos2) {
+            pos1 = Vector3I.Zero;
+            pos2 = Vector3I.Zero;
+
+            if (_selectionEntity?.Logic is BorderEntityLogic logic) {
+                if (logic.Pos1 != null && logic.Pos2 != null) {
+                    pos1 = logic.Pos1.Value;
+                    pos2 = logic.Pos2.Value;
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

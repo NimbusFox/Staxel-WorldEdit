@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NimbusFox.FoxCore.Classes;
+using NimbusFox.WorldEdit.Components;
 using Plukit.Base;
 using Staxel;
 using Staxel.Core;
@@ -15,11 +16,15 @@ namespace NimbusFox.WorldEdit.Entities.Border {
 
         public TileConfiguration StraightTile { get; private set; }
         public TileConfiguration CornerTile { get; private set; }
+        public TileConfiguration LTile { get; private set; }
+        public TileConfiguration Selection1 { get; private set; }
+        public TileConfiguration Selection2 { get; private set; }
+
         private Blob _constructBlob;
         protected bool NeedStore { get; private set; }
 
-        protected Vector3I? Pos1 { get; private set; }
-        protected Vector3I? Pos2 { get; private set; }
+        public Vector3I? Pos1 { get; private set; }
+        public Vector3I? Pos2 { get; private set; }
 
         public VectorCubeI Cube {
             get {
@@ -96,6 +101,18 @@ namespace NimbusFox.WorldEdit.Entities.Border {
                     Entity.Blob.SetString("cornerTile", CornerTile.Code);
                 }
 
+                if (LTile != null) {
+                    Entity.Blob.SetString("lTile", LTile.Code);
+                }
+
+                if (Selection1 != null) {
+                    Entity.Blob.SetString("selection1", Selection1.Code);
+                }
+
+                if (Selection2 != null) {
+                    Entity.Blob.SetString("selection2", Selection2.Code);
+                }
+
                 NeedStore = false;
             }
         }
@@ -115,6 +132,18 @@ namespace NimbusFox.WorldEdit.Entities.Border {
             
             if (Entity.Blob.Contains("cornerTile")) {
                 CornerTile = GameContext.TileDatabase.GetTileConfiguration(Entity.Blob.GetString("cornerTile"));
+            }
+
+            if (Entity.Blob.Contains("lTile")) {
+                LTile = GameContext.TileDatabase.GetTileConfiguration(Entity.Blob.GetString("lTile"));
+            }
+
+            if (Entity.Blob.Contains("selection1")) {
+                Selection1 = GameContext.TileDatabase.GetTileConfiguration(Entity.Blob.GetString("selection1"));
+            }
+
+            if (Entity.Blob.Contains("selection2")) {
+                Selection2 = GameContext.TileDatabase.GetTileConfiguration(Entity.Blob.GetString("selection2"));
             }
         }
 
@@ -144,16 +173,12 @@ namespace NimbusFox.WorldEdit.Entities.Border {
             Entity.Physics.ForcedPosition(Cube.Start.ToTileCenterVector3D());
         }
 
-        public void SetBorderTiles(string straightTile, string cornerTile) {
-            if (!straightTile.IsNullOrEmpty()) {
-                StraightTile = GameContext.TileDatabase.GetTileConfiguration(straightTile);
-                NeedsStore();
-            }
-
-            if (!cornerTile.IsNullOrEmpty()) {
-                CornerTile = GameContext.TileDatabase.GetTileConfiguration(cornerTile);
-                NeedsStore();
-            }
+        public void SetBorderTiles(SelectionWandComponent component) {
+            StraightTile = GameContext.TileDatabase.GetTileConfiguration(component.SelectionStraight);
+            LTile = GameContext.TileDatabase.GetTileConfiguration(component.SelectionL);
+            CornerTile = GameContext.TileDatabase.GetTileConfiguration(component.SelectionCorner);
+            Selection1 = GameContext.TileDatabase.GetTileConfiguration(component.SelectionPoint1);
+            Selection2 = GameContext.TileDatabase.GetTileConfiguration(component.SelectionPoint2);
         }
 
         protected void NeedsStore() {

@@ -13,7 +13,7 @@
     "inHandRotation": {
         "x": 0.0,
         "y": 0.0,
-        "z": 0.0
+        "z": -1.57
     },
     "usageOffset": {
         "x": 0.0,
@@ -27,8 +27,11 @@
         "value": 0
     },
     "selectionWand": {
-        "borderLineTile": "nimbusfox.worldedit.entityTile.border.line",
-        "borderCornerTile": "nimbusfox.worldedit.entityTile.border.corner" 
+        "selectionPoint1": "nimbusfox.worldedit.entityTile.border.point.1",
+        "selectionPoint2": "nimbusfox.worldedit.entityTile.border.point.2",
+        "selectionStraight": "nimbusfox.worldedit.entityTile.border.straight",
+        "selectionL": "nimbusfox.worldedit.entityTile.border.l",
+        "selectionCorner": "nimbusfox.worldedit.entityTile.border.corner"
     },
     "stackSizeLimit": 1
 }

@@ -31,14 +31,19 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
         public enum BotMode : byte {
             Idle,
             Waiting,
-            Region
+            Send,
+            Receive,
+            Storage,
+            Copy,
+            Cut,
+            Paste,
+            Delete
         }
 
         public string BotTile { get; private set; }
         protected Entity Entity { get; }
         protected List<Entity> LinkedEntities { get; }
         protected bool NeedStore { get; private set; }
-        protected bool Waiting { get; set; }
         public BotComponent BotComponent { get; private set; }
         private Vector3D _destination;
         private bool _remove = false;
@@ -118,8 +123,6 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
                 if (_destination.Z - Entity.Physics.Position.Z > -increment && _destination.Z - Entity.Physics.Position.Z < increment) {
                     Entity.Physics.ForcedPosition(new Vector3D(Entity.Physics.Position.X, Entity.Physics.Position.Y, _destination.Z));
                 }
-            } else {
-                
             }
         }
 
@@ -174,6 +177,8 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
             data.FetchBlob("destination").SetVector3D(_destination);
             data.SetLong("rotation", Rotation);
             data.SetString("botTile", BotTile);
+            data.SetString("owner", Owner);
+            data.SetString("uid", OwnerUid);
 
             if (ColorReplace.Count > 0) {
                 var blob = data.FetchBlob("colorReplace");
@@ -204,6 +209,14 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
                 BotTile = data.GetString("botTile");
 
                 BotComponent = GameContext.TileDatabase.GetTileConfiguration(BotTile).Components.Get<BotComponent>();
+            }
+
+            if (data.Contains("owner")) {
+                Owner = data.GetString("owner");
+            }
+
+            if (data.Contains("uid")) {
+                OwnerUid = data.GetString("uid");
             }
 
             if (data.Contains("colorReplace")) {
@@ -344,9 +357,6 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
                 default:
                 case BotMode.Idle:
                     Mode = "nimbusfox.worldedit.verb.idle";
-                    break;
-                case BotMode.Region:
-                    Mode = "nimbusfox.worldedit.verb.region";
                     break;
                 case BotMode.Waiting:
                     Mode = "nimbusfox.worldedit.verb.waiting";

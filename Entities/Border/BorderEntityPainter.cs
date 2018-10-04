@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using NimbusFox.FoxCore;
+using NimbusFox.WorldEdit.Components;
 using Plukit.Base;
 using Staxel;
 using Staxel.Client;
@@ -18,7 +19,6 @@ using Staxel.Tiles;
 
 namespace NimbusFox.WorldEdit.Entities.Border {
     public class BorderEntityPainter : EntityPainter {
-        private VertexDrawable _cube;
 
         protected override void Dispose(bool disposing) {
         }
@@ -34,9 +34,6 @@ namespace NimbusFox.WorldEdit.Entities.Border {
         public override void BeforeRender(DeviceContext graphics, Vector3D renderOrigin, Entity entity,
             AvatarController avatarController,
             Timestep renderTimestep) {
-            if (_cube == null) {
-                CreateCubeColored();
-            }
         }
 
         public override void Render(DeviceContext graphics, Matrix4F matrix, Vector3D renderOrigin, Entity entity,
@@ -45,10 +42,7 @@ namespace NimbusFox.WorldEdit.Entities.Border {
                 var cube = borderLogic.Cube;
 
                 if (cube != null) {
-                    cube = cube.GetOuterRegions();
-                    GameContext.DebugGraphics.Enabled = true;
-                    var cubeMatrix = Matrix.CreateFromYawPitchRoll(0, 0, 0).ToMatrix4F();
-                    Helpers.VectorLoop(cube, (x, y, z) => {
+                    Helpers.VectorLoop(cube.Start + new Vector3I(1, 0, 1), cube.End, (x, y, z) => {
                         var renderCount = 0;
 
                         renderCount += y == cube.Start.Y || y == cube.End.Y ? 1 : 0;
@@ -57,45 +51,72 @@ namespace NimbusFox.WorldEdit.Entities.Border {
 
                         renderCount += x == cube.Start.X || x == cube.End.X ? 1 : 0;
 
-                        if (renderCount > 1) {
-                            var target = new Vector3D(x, y, z);
-                            var max = new Vector3D(x + 1, y + 1, z + 1);
-                            Helpers.VectorLoop(target, max, (x2, y2, z2) => {
-                                var renderCount2 = 0;
+                        if (renderCount >= 1) {
+                            Matrix4F regionMatrix;
+                            if (y == cube.Start.Y) {
+                                regionMatrix = Matrix.CreateFromYawPitchRoll(0, MathHelper.ToRadians(270), 0).ToMatrix4F();
+                                regionMatrix = Matrix4F.Multiply(regionMatrix.Translate(new Vector3F(x, y, z) - renderOrigin.ToVector3F() + borderLogic.Selection1.Components.Get<TileEntityComponent>().TileOffset), matrix);
+                                borderLogic.StraightTile.Icon.Matrix().Scale(borderLogic.StraightTile.Components.Get<TileEntityComponent>().Scale).Render(graphics, regionMatrix);
+                                return;
+                            }
 
-                                renderCount2 += y2 == target.Y || y == max.Y ? 1 : 0;
+                            if (y == cube.End.Y) {
+                                regionMatrix = Matrix.CreateFromYawPitchRoll(0, MathHelper.ToRadians(270), 0).ToMatrix4F();
+                                regionMatrix = Matrix4F.Multiply(regionMatrix.Translate(new Vector3F(x, y, z) - renderOrigin.ToVector3F() + borderLogic.Selection1.Components.Get<TileEntityComponent>().TileOffset), matrix);
+                                borderLogic.StraightTile.Icon.Matrix().Scale(borderLogic.StraightTile.Components.Get<TileEntityComponent>().Scale).Render(graphics, regionMatrix);
+                                return;
+                            }
 
-                                renderCount2 += z2 == target.Z || z == max.Z ? 1 : 0;
+                            if (z == cube.Start.Z) {
+                                regionMatrix = Matrix.CreateFromYawPitchRoll(0, 0, 0).ToMatrix4F();
+                                regionMatrix = Matrix4F.Multiply(regionMatrix.Translate(new Vector3F(x, y, z) - renderOrigin.ToVector3F() + borderLogic.Selection1.Components.Get<TileEntityComponent>().TileOffset), matrix);
+                                borderLogic.StraightTile.Icon.Matrix().Scale(borderLogic.StraightTile.Components.Get<TileEntityComponent>().Scale).Render(graphics, regionMatrix);
+                                return;
+                            }
 
-                                renderCount2 += x2 == target.X || x == max.X ? 1 : 0;
+                            if (z == cube.End.Z) {
+                                regionMatrix = Matrix.CreateFromYawPitchRoll(0, 0, 0).ToMatrix4F();
+                                regionMatrix = Matrix4F.Multiply(regionMatrix.Translate(new Vector3F(x, y, z) - renderOrigin.ToVector3F() + borderLogic.Selection1.Components.Get<TileEntityComponent>().TileOffset), matrix);
+                                borderLogic.StraightTile.Icon.Matrix().Scale(borderLogic.StraightTile.Components.Get<TileEntityComponent>().Scale).Render(graphics, regionMatrix);
+                                return;
+                            }
 
-                                if (renderCount2 > 1) {
-                                    var ccubeMatrix =
-                                        Matrix4F.Multiply(
-                                            cubeMatrix.Translate(new Vector3F((float)x2, (float)y2, (float)z2) - renderOrigin.ToVector3F()),
-                                            matrix);
-                                    _cube.Matrix().Render(graphics, ccubeMatrix);
-                                }
-                            }, 1D / 16D);
+                            if (x == cube.Start.X) {
+                                regionMatrix = Matrix.CreateFromYawPitchRoll(MathHelper.ToRadians(90), 0, 0).ToMatrix4F();
+                                regionMatrix = Matrix4F.Multiply(regionMatrix.Translate(new Vector3F(x, y, z) - renderOrigin.ToVector3F() + borderLogic.Selection1.Components.Get<TileEntityComponent>().TileOffset), matrix);
+                                borderLogic.StraightTile.Icon.Matrix().Scale(borderLogic.StraightTile.Components.Get<TileEntityComponent>().Scale).Render(graphics, regionMatrix);
+                                return;
+                            }
+
+                            if (x == cube.End.X) {
+                                regionMatrix = Matrix.CreateFromYawPitchRoll(MathHelper.ToRadians(90), 0, 0).ToMatrix4F();
+                                regionMatrix = Matrix4F.Multiply(regionMatrix.Translate(new Vector3F(x, y, z) - renderOrigin.ToVector3F() + borderLogic.Selection1.Components.Get<TileEntityComponent>().TileOffset), matrix);
+                                borderLogic.StraightTile.Icon.Matrix().Scale(borderLogic.StraightTile.Components.Get<TileEntityComponent>().Scale).Render(graphics, regionMatrix);
+                                return;
+                            }
                         }
                     });
-                }
 
+                    var boxMatrix = Matrix.CreateFromYawPitchRoll(0, 0, 0).ToMatrix4F();
+
+                    var boxMatrix1 = Matrix4F.Multiply(
+                        boxMatrix.Translate((cube.OrigStart.ToVector3F() - renderOrigin.ToVector3F()) +
+                                            borderLogic.Selection1.Components.Get<TileEntityComponent>().TileOffset),
+                        matrix);
+
+                    borderLogic.Selection1.Icon.Matrix()
+                        .Scale(borderLogic.Selection1.Components.Get<TileEntityComponent>().Scale)
+                        .Render(graphics, boxMatrix1);
+
+                    var boxMatrix2 = Matrix4F.Multiply(boxMatrix.Translate(
+                        (cube.OrigEnd.ToVector3F() - renderOrigin.ToVector3F()) + borderLogic.Selection2.Components
+                            .Get<TileEntityComponent>().TileOffset), matrix);
+
+                    borderLogic.Selection2.Icon.Matrix().Scale(borderLogic.Selection2.Components.Get<TileEntityComponent>().Scale).Render(graphics, boxMatrix2);
+                }
             }
         }
 
         public override void StartEmote(Entity entity, Timestep renderTimestep, EmoteConfiguration emote) { }
-
-        private void CreateCubeColored() {
-            var cube = new CubeDrawable();
-
-            var list = ((CompactVertexDrawable)cube.Compile()).CompileToVoxelVertexArray();
-
-            for (var i = 0; i < list.Length; i++) {
-                list[i].Color = new Color(Color.Red, 0.25f);
-            }
-
-            _cube = new VertexDrawable(list.ToList());
-        }
     }
 }

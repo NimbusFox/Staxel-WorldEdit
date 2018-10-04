@@ -7,11 +7,17 @@ using Plukit.Base;
 
 namespace NimbusFox.WorldEdit.Components {
     public class SelectionWandComponent {
-        public string BorderLineTile { get; }
-        public string BorderCornerTile { get; }
+        public string SelectionPoint1 { get; }
+        public string SelectionPoint2 { get; }
+        public string SelectionStraight { get; }
+        public string SelectionL { get; }
+        public string SelectionCorner { get; }
         public SelectionWandComponent(Blob config) {
-            BorderLineTile = config.GetString("borderLineTile");
-            BorderCornerTile = config.GetString("borderCornerTile");
+            SelectionPoint1 = config.GetString("selectionPoint1");
+            SelectionPoint2 = config.GetString("selectionPoint2");
+            SelectionStraight = config.GetString("selectionStraight");
+            SelectionL = config.GetString("selectionL");
+            SelectionCorner = config.GetString("selectionCorner");
         }
     }
 }

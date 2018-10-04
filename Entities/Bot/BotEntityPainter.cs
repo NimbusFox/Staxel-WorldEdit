@@ -110,9 +110,6 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
 
         public override void Render(DeviceContext graphics, Matrix4F matrix, Vector3D renderOrigin, Entity entity,
             AvatarController avatarController, Timestep renderTimestep, RenderMode renderMode) {
-            if (renderMode == RenderMode.Overlay)
-                return;
-
             if (!_botTileCode.IsNullOrEmpty()) {
                 if (entity.Logic is BotEntityLogic logic) {
                     var pos = entity.Physics.Position.ToVector3F();
