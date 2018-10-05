@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using NimbusFox.FoxCore;
+using NimbusFox.FoxCore.Classes;
 using NimbusFox.FoxCore.Dependencies.Harmony;
 using NimbusFox.WorldEdit.Components;
+using NimbusFox.WorldEdit.Items.Wands;
 using Plukit.Base;
 using Staxel;
 using Staxel.Core;
@@ -48,7 +50,9 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
         private Vector3D _destination;
         private bool _remove = false;
         private Blob _constructBlob;
-        public int Rotation { get; private set; } = 0;
+        public int Rotation { get; private set; }
+        protected bool Traveling { get; private set; }
+        protected VectorCubeI Region { get; private set; }
 
         // Client variables
         internal bool UpdateColors = true;
@@ -106,6 +110,7 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
             }
 
             if (_destination != Entity.Physics.Position) {
+                Traveling = true;
                 const double increment = 0.005;
                 Entity.Physics.ForcedPosition(Entity.Physics.Position + new Vector3D(
                                                   Entity.Physics.Position.X < _destination.X ? increment : Entity.Physics.Position.X > _destination.X ? -increment : 0,
@@ -123,6 +128,8 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
                 if (_destination.Z - Entity.Physics.Position.Z > -increment && _destination.Z - Entity.Physics.Position.Z < increment) {
                     Entity.Physics.ForcedPosition(new Vector3D(Entity.Physics.Position.X, Entity.Physics.Position.Y, _destination.Z));
                 }
+            } else {
+                Traveling = false;
             }
         }
 
@@ -154,10 +161,28 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
             if (alt.DownClick) {
                 Remove();
             }
+
+            if (main.DownClick) {
+                if (entity.Inventory.ActiveItem().Item is SelectionWandItem selectionWand) {
+                    if (selectionWand.TryGetPos(out var pos1, out var pos2)) {
+                        SetRegion(new VectorCubeI(pos1, pos2));
+                    }
+                }
+            }
         }
 
         public override string AltInteractVerb() {
             return "nimbusfox.worldedit.verb.cancel";
+        }
+
+        public override bool TryResolveMainInteractVerb(Entity entity, EntityUniverseFacade facade, ItemStack activeItem, out string verb) {
+            if (entity.Inventory.ActiveItem().Item is SelectionWandItem selectionWand) {
+                if (selectionWand.TryGetPos(out _, out _)) {
+                    verb = "nimbusfox.worledit.verb.setRegion";
+                    return true;
+                }
+            }
+            return base.TryResolveMainInteractVerb(entity, facade, activeItem, out verb);
         }
 
         public override bool CanChangeActiveItem() {
@@ -244,6 +269,8 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
                         blob.SetString(color.Key.PackedValue.ToString(), color.Value.PackedValue.ToString());
                     }
                 }
+
+                NeedStore = false;
             }
         }
 
@@ -361,6 +388,14 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
                 case BotMode.Waiting:
                     Mode = "nimbusfox.worldedit.verb.waiting";
                     break;
+            }
+        }
+
+        public void SetRegion(VectorCubeI region) {
+            Region = region;
+
+            if (Entity.Physics.Position != region.Start.ToVector3D()) {
+                SetDestination(region.Start);
             }
         }
     }

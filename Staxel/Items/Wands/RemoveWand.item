@@ -1,0 +1,30 @@
+{
+    "categories": [
+
+    ],
+    "code": "nimbusfox.worldedit.item.wand.remove",
+    "icon": "mods/World Edit/Staxel/Items/Wands/RemoveWand.qb",
+    "inHand": "mods/World Edit/Staxel/Items/Wands/RemoveWand.qb",
+    "inHandOffset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "inHandRotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": -1.57
+    },
+    "usageOffset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "kind": "nimbusfox.worldedit.item.wand.remove",
+    "pricing": {
+        "buyable": false,
+        "sellPrice": 0,
+        "value": 0
+    },
+    "stackSizeLimit": 1
+}

@@ -6,7 +6,7 @@
     "tileEntity": {
         "tileOffset": {
             "x": 0.5,
-            "y": 0.25,
+            "y": 0.0,
             "z": 0.5
         },
         "scale": 1.5

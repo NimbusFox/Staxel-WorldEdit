@@ -27,14 +27,14 @@ namespace NimbusFox.WorldEdit.Entities.Border {
             return false;
         }
 
-        public static Entity Spawn(Vector3I position, EntityUniverseFacade universe, string uid) {
+        public static Entity Spawn(Vector3I position, EntityUniverseFacade universe, Entity owner) {
             var entity = new Entity(universe.AllocateNewEntityId(), false, KindCode, true);
 
             var blob = BlobAllocator.Blob(true);
             blob.SetString("kind", KindCode);
             blob.FetchBlob("position").SetVector3D(position.ToTileCenterVector3D());
             blob.FetchBlob("location").SetVector3I(position);
-            blob.SetString("owner", uid);;
+            blob.SetLong("owner", owner.Id.Id);
 
             entity.Construct(blob, universe);
 

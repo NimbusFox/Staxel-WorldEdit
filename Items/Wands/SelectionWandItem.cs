@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NimbusFox.FoxCore.Classes;
 using NimbusFox.WorldEdit.Components;
 using NimbusFox.WorldEdit.Entities.Border;
 using NimbusFox.WorldEdit.Entities.Bot;
@@ -15,13 +16,13 @@ using Staxel.Player;
 using Staxel.Tiles;
 
 namespace NimbusFox.WorldEdit.Items.Wands {
-    public class Selection : Item {
-        protected SelectionWandBuilder Builder { get; }
+    public class SelectionWandItem : Item {
+        protected SelectionWandItemBuilder Builder { get; }
         protected SelectionWandComponent WandComponent { get; }
 
         private Entity _selectionEntity;
 
-        public Selection(SelectionWandBuilder builder, ItemConfiguration config) : base(builder.Kind()) {
+        public SelectionWandItem(SelectionWandItemBuilder builder, ItemConfiguration config) : base(builder.Kind()) {
             Builder = builder;
             Configuration = config;
             WandComponent = config.Components.Get<SelectionWandComponent>();
@@ -57,7 +58,7 @@ namespace NimbusFox.WorldEdit.Items.Wands {
 
         protected void CreateSelectionEntity(Entity entity, EntityUniverseFacade facade, Vector3I location) {
             if (entity.Logic is PlayerEntityLogic logic) {
-                _selectionEntity = BorderEntityBuilder.Spawn(location, facade, logic.Uid());
+                _selectionEntity = BorderEntityBuilder.Spawn(location, facade, entity);
             }
         }
 

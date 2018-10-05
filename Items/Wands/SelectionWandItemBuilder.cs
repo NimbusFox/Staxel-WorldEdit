@@ -7,7 +7,7 @@ using Plukit.Base;
 using Staxel.Items;
 
 namespace NimbusFox.WorldEdit.Items.Wands {
-    public class SelectionWandBuilder : IItemBuilder {
+    public class SelectionWandItemBuilder : IItemBuilder {
         public static string KindCode => "nimbusfox.worldedit.item.wand.selection";
 
         public ItemRenderer Renderer { get; private set; }
@@ -18,7 +18,7 @@ namespace NimbusFox.WorldEdit.Items.Wands {
             Renderer = new ItemRenderer();
         }
         public Item Build(Blob blob, ItemConfiguration configuration, Item spare) {
-            return new Selection(this, configuration);
+            return new SelectionWandItem(this, configuration);
         }
 
         public string Kind() {

@@ -39,114 +39,13 @@ namespace NimbusFox.WorldEdit.Entities.Border {
         public override void Render(DeviceContext graphics, Matrix4F matrix, Vector3D renderOrigin, Entity entity,
             AvatarController avatarController, Timestep renderTimestep, RenderMode renderMode) {
             if (entity.Logic is BorderEntityLogic borderLogic) {
+                if (!ClientContext.PlayerFacade.IsLocalPlayer(borderLogic.Owner)) { 
+                    return;
+                }
+
                 var cube = borderLogic.Cube;
 
                 if (cube != null) {
-                    Helpers.VectorLoop(cube, (x, y, z) => {
-                        var renderCount = 0;
-
-                        renderCount += y == cube.Start.Y || y == cube.End.Y ? 1 : 0;
-
-                        renderCount += z == cube.Start.Z || z == cube.End.Z ? 1 : 0;
-
-                        renderCount += x == cube.Start.X || x == cube.End.X ? 1 : 0;
-
-                        Matrix4F regionMatrix;
-                        MatrixDrawable tile;
-                        WorldEditBorderComponent worldEditComponent;
-
-                        if (renderCount == 3) {
-                            tile = borderLogic.CornerTile.Icon.Matrix();
-                            worldEditComponent = borderLogic.CornerTile.Components.Get<WorldEditBorderComponent>();
-
-                            var yaw = 0;
-
-                            if (y == cube.End.Y) {
-                                yaw = 180;
-                            }
-
-
-                        }
-
-                        if (renderCount == 2) {
-                            tile = borderLogic.LTile.Icon.Matrix();
-                            worldEditComponent = borderLogic.LTile.Components.Get<WorldEditBorderComponent>();
-
-                            var yaw = 0;
-
-
-                        }
-
-                        if (renderCount == 1) {
-                            tile = borderLogic.StraightTile.Icon.Matrix();
-                            worldEditComponent =
-                                borderLogic.StraightTile.Components.Get<WorldEditBorderComponent>();
-
-                            var scale = worldEditComponent.Scale;
-
-                            if (y == cube.Start.Y) {
-                                regionMatrix = Matrix.CreateFromYawPitchRoll(0, MathHelper.ToRadians(90), 0).ToMatrix4F();
-                                regionMatrix =
-                                    Matrix4F.Multiply(
-                                        regionMatrix.Translate(
-                                            new Vector3F(x, y, z) - renderOrigin.ToVector3F()), matrix).Translate(worldEditComponent.NY);
-                                tile.Scale(scale).Render(graphics, regionMatrix);
-                                return;
-                            }
-
-                            if (y == cube.End.Y) {
-                                regionMatrix = Matrix.CreateFromYawPitchRoll(0, MathHelper.ToRadians(90), 0).ToMatrix4F();
-                                regionMatrix =
-                                    Matrix4F.Multiply(
-                                            regionMatrix.Translate(
-                                                new Vector3F(x, y, z) - renderOrigin.ToVector3F()), matrix)
-                                        .Translate(worldEditComponent.PY);
-                                tile.Scale(scale).Render(graphics, regionMatrix);
-                                return;
-                            }
-
-                            if (z == cube.Start.Z) {
-                                regionMatrix = Matrix.CreateFromYawPitchRoll(0, 0, 0).ToMatrix4F();
-                                regionMatrix =
-                                    Matrix4F.Multiply(
-                                        regionMatrix.Translate(
-                                            new Vector3F(x, y, z) - renderOrigin.ToVector3F()), matrix).Translate(worldEditComponent.NZ);
-                                tile.Scale(scale).Render(graphics, regionMatrix);
-                                return;
-                            }
-
-                            if (z == cube.End.Z) {
-                                regionMatrix = Matrix.CreateFromYawPitchRoll(0, 0, 0).ToMatrix4F();
-                                regionMatrix =
-                                    Matrix4F.Multiply(
-                                        regionMatrix.Translate(
-                                            new Vector3F(x, y, z) - renderOrigin.ToVector3F()), matrix).Translate(worldEditComponent.PZ);
-                                tile.Scale(scale).Render(graphics, regionMatrix);
-                                return;
-                            }
-
-                            if (x == cube.Start.X) {
-                                regionMatrix = Matrix.CreateFromYawPitchRoll(MathHelper.ToRadians(90), 0, 0).ToMatrix4F();
-                                regionMatrix =
-                                    Matrix4F.Multiply(
-                                        regionMatrix.Translate(
-                                            new Vector3F(x, y, z) - renderOrigin.ToVector3F()), matrix).Translate(worldEditComponent.NX);
-                                tile.Scale(scale).Render(graphics, regionMatrix);
-                                return;
-                            }
-
-                            if (x == cube.End.X) {
-                                regionMatrix = Matrix.CreateFromYawPitchRoll(MathHelper.ToRadians(90), 0, 0).ToMatrix4F();
-                                regionMatrix =
-                                    Matrix4F.Multiply(
-                                        regionMatrix.Translate(
-                                            new Vector3F(x, y, z) - renderOrigin.ToVector3F()), matrix).Translate(worldEditComponent.PX);
-                                tile.Scale(scale).Render(graphics, regionMatrix);
-                                return;
-                            }
-                        }
-                    });
-
                     var boxMatrix = Matrix.CreateFromYawPitchRoll(0, 0, 0).ToMatrix4F();
 
                     var boxMatrix1 = Matrix4F.Multiply(

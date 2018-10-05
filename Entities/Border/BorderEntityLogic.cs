@@ -13,10 +13,7 @@ using Staxel.Tiles;
 
 namespace NimbusFox.WorldEdit.Entities.Border {
     public class BorderEntityLogic : EntityLogic {
-
-        public TileConfiguration StraightTile { get; private set; }
-        public TileConfiguration CornerTile { get; private set; }
-        public TileConfiguration LTile { get; private set; }
+        
         public TileConfiguration Selection1 { get; private set; }
         public TileConfiguration Selection2 { get; private set; }
 
@@ -25,6 +22,8 @@ namespace NimbusFox.WorldEdit.Entities.Border {
 
         public Vector3I? Pos1 { get; private set; }
         public Vector3I? Pos2 { get; private set; }
+
+        public bool Remap = true;
 
         public VectorCubeI Cube {
             get {
@@ -37,7 +36,7 @@ namespace NimbusFox.WorldEdit.Entities.Border {
         }
 
         protected Entity Entity { get; }
-        protected string Owner { get; private set; }
+        public long Owner { get; private set; }
 
         public BorderEntityLogic(Entity entity) {
             Entity = entity;
@@ -48,7 +47,7 @@ namespace NimbusFox.WorldEdit.Entities.Border {
         public override void Update(Timestep timestep, EntityUniverseFacade entityUniverseFacade) { }
 
         public override void PostUpdate(Timestep timestep, EntityUniverseFacade entityUniverseFacade) {
-            if (!WorldEditHook.Instance.FxCore.UserManager.IsUserOnline(Owner)) {
+            if (!entityUniverseFacade.TryGetEntity(Owner, out _)) {
                 Entity.SetRemoved();
                 entityUniverseFacade.RemoveEntity(Entity.Id);
             }
@@ -58,7 +57,7 @@ namespace NimbusFox.WorldEdit.Entities.Border {
             _constructBlob = BlobAllocator.Blob(true);
             _constructBlob.MergeFrom(arguments);
             Entity.Physics.ForcedPosition(arguments.FetchBlob("location").GetVector3I().ToVector3D());
-            Owner = arguments.GetString("owner");
+            Owner = arguments.GetLong("owner");
 
             NeedsStore();
         }
@@ -93,24 +92,16 @@ namespace NimbusFox.WorldEdit.Entities.Border {
                     Entity.Blob.FetchBlob("pos2").SetVector3I(Pos2.Value);
                 }
 
-                if (StraightTile != null) {
-                    Entity.Blob.SetString("straightTile", StraightTile.Code);
-                }
-
-                if (CornerTile != null) {
-                    Entity.Blob.SetString("cornerTile", CornerTile.Code);
-                }
-
-                if (LTile != null) {
-                    Entity.Blob.SetString("lTile", LTile.Code);
-                }
-
                 if (Selection1 != null) {
                     Entity.Blob.SetString("selection1", Selection1.Code);
                 }
 
                 if (Selection2 != null) {
                     Entity.Blob.SetString("selection2", Selection2.Code);
+                }
+
+                if (Owner != 0) {
+                    Entity.Blob.SetLong("owner", Owner);
                 }
 
                 NeedStore = false;
@@ -120,22 +111,12 @@ namespace NimbusFox.WorldEdit.Entities.Border {
         public override void Restore() {
             if (Entity.Blob.Contains("pos1")) {
                 Pos1 = Entity.Blob.FetchBlob("pos1").GetVector3I();
+                Remap = true;
             }
 
             if (Entity.Blob.Contains("pos2")) {
                 Pos2 = Entity.Blob.FetchBlob("pos2").GetVector3I();
-            }
-
-            if (Entity.Blob.Contains("straightTile")) {
-                StraightTile = GameContext.TileDatabase.GetTileConfiguration(Entity.Blob.GetString("straightTile"));
-            }
-            
-            if (Entity.Blob.Contains("cornerTile")) {
-                CornerTile = GameContext.TileDatabase.GetTileConfiguration(Entity.Blob.GetString("cornerTile"));
-            }
-
-            if (Entity.Blob.Contains("lTile")) {
-                LTile = GameContext.TileDatabase.GetTileConfiguration(Entity.Blob.GetString("lTile"));
+                Remap = true;
             }
 
             if (Entity.Blob.Contains("selection1")) {
@@ -144,6 +125,10 @@ namespace NimbusFox.WorldEdit.Entities.Border {
 
             if (Entity.Blob.Contains("selection2")) {
                 Selection2 = GameContext.TileDatabase.GetTileConfiguration(Entity.Blob.GetString("selection2"));
+            }
+
+            if (Entity.Blob.Contains("owner")) {
+                Owner = Entity.Blob.GetLong("owner");
             }
         }
 
@@ -174,9 +159,6 @@ namespace NimbusFox.WorldEdit.Entities.Border {
         }
 
         public void SetBorderTiles(SelectionWandComponent component) {
-            StraightTile = GameContext.TileDatabase.GetTileConfiguration(component.SelectionStraight);
-            LTile = GameContext.TileDatabase.GetTileConfiguration(component.SelectionL);
-            CornerTile = GameContext.TileDatabase.GetTileConfiguration(component.SelectionCorner);
             Selection1 = GameContext.TileDatabase.GetTileConfiguration(component.SelectionPoint1);
             Selection2 = GameContext.TileDatabase.GetTileConfiguration(component.SelectionPoint2);
         }
