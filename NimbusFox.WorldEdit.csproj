@@ -63,18 +63,20 @@
     <Compile Include="Components\Builders\BotComponentBuilder.cs" />
     <Compile Include="Components\Builders\SelectionWandComponentBuilder.cs" />
     <Compile Include="Components\Builders\TileEntityComponentBuilder.cs" />
-    <Compile Include="Components\Builders\WorldEditBorderComponentBuilder.cs" />
     <Compile Include="Components\SelectionWandComponent.cs" />
     <Compile Include="Components\TileEntityComponent.cs" />
-    <Compile Include="Components\WorldEditBorderComponent.cs" />
     <Compile Include="Entities\Border\BorderEntityBuilder.cs" />
     <Compile Include="Entities\Border\BorderEntityLogic.cs" />
     <Compile Include="Entities\Border\BorderEntityPainter.cs" />
     <Compile Include="Entities\Bot\BotEntityBuilder.cs" />
     <Compile Include="Entities\Bot\BotEntityLogic.cs" />
     <Compile Include="Entities\Bot\BotEntityPainter.cs" />
-    <Compile Include="Items\Wands\Selection.cs" />
-    <Compile Include="Items\Wands\SelectionWandBuilder.cs" />
+    <Compile Include="Items\Wands\BaseBotSpawnItem.cs" />
+    <Compile Include="Items\Wands\BaseBotSPawnItemBuilder.cs" />
+    <Compile Include="Items\Wands\RemoveWandItem.cs" />
+    <Compile Include="Items\Wands\RemoveWandItemBuilder.cs" />
+    <Compile Include="Items\Wands\SelectionWandItem.cs" />
+    <Compile Include="Items\Wands\SelectionWandItemBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WEConstants.cs" />
     <Compile Include="WorldEditHook.cs" />
@@ -92,34 +94,16 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Staxel\Border\BorderSelectionStraight.tile">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Staxel\Border\BorderSelectionPoint2.tile">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Staxel\Border\BorderSelectionPoint1.tile">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Staxel\Border\BorderSelectionL.tile">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Border\BorderSelectionCorner.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Border\BorderSelectionCorner.tile">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Border\BorderSelectionL.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Staxel\Border\BorderSelectionPoint1.qb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Staxel\Border\BorderSelectionPoint2.qb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Staxel\Border\BorderSelectionStraight.qb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Staxel\Bots\Symbols\CopySymbol.qb">
@@ -167,6 +151,7 @@
     <None Include="Staxel\Items\Wands\FillWand.qb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Staxel\Items\Wands\RemoveWand.item" />
     <None Include="Staxel\Items\Wands\RemoveWand.qb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
