@@ -108,7 +108,7 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
         public override void BeforeRender(DeviceContext graphics, Vector3D renderOrigin, Entity entity, AvatarController avatarController,
             Timestep renderTimestep) { }
 
-        public override void Render(DeviceContext graphics, Matrix4F matrix, Vector3D renderOrigin, Entity entity,
+        public override void Render(DeviceContext graphics, ref Matrix4F matrix, Vector3D renderOrigin, Entity entity,
             AvatarController avatarController, Timestep renderTimestep, RenderMode renderMode) {
             if (!_botTileCode.IsNullOrEmpty()) {
                 if (entity.Logic is BotEntityLogic logic) {
@@ -128,7 +128,7 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
 
                     botMatrix = Matrix4F.Multiply(botMatrix.Translate(pos.X - (float)renderOrigin.X, pos.Y - (float)renderOrigin.Y, pos.Z - (float)renderOrigin.Z), matrix);
 
-                    _bot.Render(graphics, botMatrix);
+                    _bot.Render(graphics, ref botMatrix);
 
                     var bladeMatrix = Matrix
                         .CreateFromYawPitchRoll(
@@ -141,7 +141,7 @@ namespace NimbusFox.WorldEdit.Entities.Bot {
                             currentPosition.X - (float) renderOrigin.X, currentPosition.Y - (float) renderOrigin.Y,
                             currentPosition.Z - (float) renderOrigin.Z), matrix);
 
-                        _bladeTile.Configuration.Icon.Matrix().Scale(logic.BotComponent.BladeLocations[i].Item2).Render(graphics, currentBladeMatrix);
+                        _bladeTile.Configuration.Icon.Matrix().Scale(logic.BotComponent.BladeLocations[i].Item2).Render(graphics, ref currentBladeMatrix);
                     }
                 }
             }

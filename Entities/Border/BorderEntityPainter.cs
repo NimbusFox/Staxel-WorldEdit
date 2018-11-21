@@ -36,7 +36,7 @@ namespace NimbusFox.WorldEdit.Entities.Border {
             Timestep renderTimestep) {
         }
 
-        public override void Render(DeviceContext graphics, Matrix4F matrix, Vector3D renderOrigin, Entity entity,
+        public override void Render(DeviceContext graphics, ref Matrix4F matrix, Vector3D renderOrigin, Entity entity,
             AvatarController avatarController, Timestep renderTimestep, RenderMode renderMode) {
             if (entity.Logic is BorderEntityLogic borderLogic) {
                 if (!ClientContext.PlayerFacade.IsLocalPlayer(borderLogic.Owner)) { 
@@ -55,13 +55,13 @@ namespace NimbusFox.WorldEdit.Entities.Border {
 
                     borderLogic.Selection1.Icon.Matrix()
                         .Scale(borderLogic.Selection1.Components.Get<TileEntityComponent>().Scale)
-                        .Render(graphics, boxMatrix1);
+                        .Render(graphics, ref boxMatrix1);
 
                     var boxMatrix2 = Matrix4F.Multiply(boxMatrix.Translate(
                         (cube.OrigEnd.ToVector3F() - renderOrigin.ToVector3F()) + borderLogic.Selection2.Components
                             .Get<TileEntityComponent>().TileOffset), matrix);
 
-                    borderLogic.Selection2.Icon.Matrix().Scale(borderLogic.Selection2.Components.Get<TileEntityComponent>().Scale).Render(graphics, boxMatrix2);
+                    borderLogic.Selection2.Icon.Matrix().Scale(borderLogic.Selection2.Components.Get<TileEntityComponent>().Scale).Render(graphics, ref boxMatrix2);
                 }
             }
         }
